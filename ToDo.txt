@@ -1,0 +1,51 @@
+1. Diretx 장치 초기화
+
+2. GameObject 설계
+  - Component
+    - ParticleSystem
+    - StateMachine ( BlackBoard )
+ 
+3. Asset 설계
+
+4. Level, Layer
+
+5. Material 설계
+  - Dynamic Material
+  - Save / Load
+
+6. Editor
+ - Inspector
+ - Content
+ - Outliner
+ - Level / Save / Load
+
+7. Script 분리
+
+
+8. 복사 생성자
+
+
+9. Post Process ( 후 처리 )
+  - Distortion 효과
+  - FOG 
+
+10. Sprite Editor
+  - 
+
+11. StructuredBuffer
+  - GetData
+  - UnorderedAccessView 
+
+12. GPGPU
+  - Compute Shader
+  - UAV(UnorderedAccessView)
+
+13. ParticleSystemComponent
+  - GS (GeometryShader)
+
+14. FMOD
+
+15. Font
+
+
+

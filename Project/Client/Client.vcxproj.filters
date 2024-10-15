@@ -124,6 +124,9 @@
     <Filter Include="EditorUI\08. SpriteEditor\SE_Sub\SE_AtlasView">
       <UniqueIdentifier>{e34f6401-5b14-4f41-88dd-ca6e7804459c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EditorUI\01. Inspector\ComponentUI\10. Light3DUI">
+      <UniqueIdentifier>{3cb067f5-98e3-46a9-baac-0664b3f9ea1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -213,9 +216,6 @@
     <ClInclude Include="ListUI.h">
       <Filter>EditorUI\04. ListUI</Filter>
     </ClInclude>
-    <ClInclude Include="Light2DUI.h">
-      <Filter>EditorUI\01. Inspector\ComponentUI\08. Light2DUI</Filter>
-    </ClInclude>
     <ClInclude Include="TreeUI.h">
       <Filter>EditorUI\05. TreeUI</Filter>
     </ClInclude>
@@ -278,6 +278,12 @@
     </ClInclude>
     <ClInclude Include="SE_Detail.h">
       <Filter>EditorUI\08. SpriteEditor\SE_Sub\SE_Detatil</Filter>
+    </ClInclude>
+    <ClInclude Include="Light2DUI.h">
+      <Filter>EditorUI\01. Inspector\ComponentUI\08. Light2DUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Light3DUI.h">
+      <Filter>EditorUI\01. Inspector\ComponentUI\10. Light3DUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -365,9 +371,6 @@
     <ClCompile Include="ListUI.cpp">
       <Filter>EditorUI\04. ListUI</Filter>
     </ClCompile>
-    <ClCompile Include="Light2DUI.cpp">
-      <Filter>EditorUI\01. Inspector\ComponentUI\08. Light2DUI</Filter>
-    </ClCompile>
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="TreeUI.cpp">
       <Filter>EditorUI\05. TreeUI</Filter>
@@ -434,6 +437,12 @@
     </ClCompile>
     <ClCompile Include="SE_Detail.cpp">
       <Filter>EditorUI\08. SpriteEditor\SE_Sub\SE_Detatil</Filter>
+    </ClCompile>
+    <ClCompile Include="Light2DUI.cpp">
+      <Filter>EditorUI\01. Inspector\ComponentUI\08. Light2DUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Light3DUI.cpp">
+      <Filter>EditorUI\01. Inspector\ComponentUI\10. Light3DUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

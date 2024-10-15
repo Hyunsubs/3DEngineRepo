@@ -28,7 +28,7 @@ void CTestLevel::CreateTestLevel()
 
 	// Level 생성
 	CLevel* pLevel = new CLevel;
-	
+
 	pLevel->GetLayer(0)->SetName(L"Default");
 	pLevel->GetLayer(1)->SetName(L"Background");
 	pLevel->GetLayer(2)->SetName(L"Tile");
@@ -60,31 +60,39 @@ void CTestLevel::CreateTestLevel()
 
 	// 3D 광원 추가
 	pObject = new CGameObject;
-	pObject->SetName(L"Directional Light");
+	pObject->SetName(L"Directinal Light");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CLight3D);
 
+	pObject->Transform()->SetRelativePos(-300.f, 0.f, 0.f);
 	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
 
 	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
-	pObject->Light3D()->SetLightColor(Vec3(1.f, 1.f, 1.f));
-	pObject->Light3D()->SetLightAmbient(Vec3(0.15f, 0.15f, 0.15f));
+	pObject->Light3D()->SetLightColor(Vec3(0.9f, 0.9f, 0.9f));
+	pObject->Light3D()->SetLightAmbient(Vec3(0.1f, 0.1f, 0.1f));
 	pObject->Light3D()->SetSpecularCoefficient(0.3f);
-	
-	pLevel->AddObject(0, pObject);
+	pObject->Light3D()->SetRadius(800.f);
 
+	pLevel->AddObject(0, pObject);
 
 	// 플레이어 오브젝트
 	CGameObject* pPlayer = new CGameObject;
 	pPlayer->SetName(L"Player");
 	pPlayer->AddComponent(new CTransform);
-	pPlayer->AddComponent(new CMeshRender);		
-	
-	pPlayer->Transform()->SetRelativePos(0.f, 0.f, 100.f);
-	pPlayer->Transform()->SetRelativeScale(500.f, 500.f, 500.f);
+	pPlayer->AddComponent(new CMeshRender);
 
-	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
+	pPlayer->Transform()->SetRelativePos(0.f, -500.f, 0.f);
+	pPlayer->Transform()->SetRelativeScale(1000.f, 1000.f, 1.f);
+	pPlayer->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
+
+	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	pPlayer->MeshRender()->SetMaterial(pMtrl);
+
+	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_albedo.TGA");
+	Ptr<CTexture> pNTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
+
+	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
+	//pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
 
 	pLevel->AddObject(3, pPlayer);
 

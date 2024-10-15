@@ -394,5 +394,8 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+# Texture Content
+OutputFile/content
+
 # JetBrains Rider
 *.sln.iml

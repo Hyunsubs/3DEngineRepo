@@ -6,6 +6,7 @@
 #include "CGameObject.h"
 
 #include "CTaskMgr.h"
+#include "components.h"
 
 CLevelMgr::CLevelMgr()
 	: m_CurLevel(nullptr)
@@ -44,6 +45,11 @@ void CLevelMgr::Progress()
 	m_LevelChanged = false;
 	if (nullptr == m_CurLevel)
 		return;
+	CGameObject* pSpot = nullptr;
+	if (pSpot = FindObjectByName(L"Spot Light 1"))
+	{
+		DrawDebugRect(pSpot->Transform()->GetWorldPos(), Vec3(10.f, 10.f, 0.f), pSpot->Transform()->GetRelativeRotation(), Vec4(1.f, 0.f, 0.f, 1.f), 0.f, false);
+	}
 
 	if (m_CurLevel->GetState() == LEVEL_STATE::PLAY)
 	{

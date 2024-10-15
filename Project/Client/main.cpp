@@ -9,9 +9,14 @@
 #include "CLevelSaveLoad.h"
 #include "CTestLevel.h"
 
+
+// 주말 241011 과제
+// SpotLight 구현하기
+// 물체를 설치한 후, SpotLight 광원으로 물체들 비춰보기
+
+
 // 전역 변수:
 HINSTANCE g_hInst = nullptr;
-
 
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);

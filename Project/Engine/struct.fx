@@ -6,7 +6,7 @@ struct tLight
 {
     float4 Color;       // ºûÀÇ »ö»ó
     float4 Ambient;     // È¯°æ±¤	
-    float  SpecCoef;     // ¹Ý»ç±¤ °è¼ö
+    float  SpecCoef;    // ¹Ý»ç±¤ °è¼ö
 };
 
 struct tLightInfo

@@ -40,6 +40,8 @@ public:
     void RegisterLight3D(CLight3D* _Light) { m_vecLight3D.push_back(_Light); }
     void PostProcessCopy();
 
+    CCamera* GetPOVCam();
+
 private:
     void RenderStart();
     void Clear();

@@ -163,6 +163,9 @@
     <ClInclude Include="CLight3D.h">
       <Filter>08. Component\09. Light3D</Filter>
     </ClInclude>
+    <ClInclude Include="CSkyBox.h">
+      <Filter>08. Component\10. SkyBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -303,6 +306,9 @@
     </ClCompile>
     <ClCompile Include="CLight3D.cpp">
       <Filter>08. Component\09. Light3D</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkyBox.cpp">
+      <Filter>08. Component\10. SkyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -480,6 +486,9 @@
     <Filter Include="08. Component\09. Light3D">
       <UniqueIdentifier>{c14eb9f4-762d-4132-84a3-20309c01a671}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08. Component\10. SkyBox">
+      <UniqueIdentifier>{80fcda5c-1c91-4639-901f-c5260e8bbffe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -518,6 +527,9 @@
       <Filter>HLSL\03. Compute\02. ParticleTick</Filter>
     </FxCompile>
     <FxCompile Include="std3d.fx">
+      <Filter>HLSL\02. Render\02. 3D</Filter>
+    </FxCompile>
+    <FxCompile Include="skybox.fx">
       <Filter>HLSL\02. Render\02. 3D</Filter>
     </FxCompile>
   </ItemGroup>

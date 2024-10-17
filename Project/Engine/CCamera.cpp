@@ -25,7 +25,7 @@ CCamera::CCamera()
 	, m_Width(0)
 	, m_Height(0)
 	, m_Far(100000.f)
-	, m_FOV( XM_PI / 2.f)
+	, m_FOV(XM_PI / 2.f)
 	, m_ProjectionScale(1.f)
 {
 	Vec2 vResolution = CDevice::GetInst()->GetResolution();
@@ -116,7 +116,7 @@ void CCamera::SortGameObject()
 		const vector<CGameObject*>& vecObjects = pLayer->GetObjects();
 		for (size_t j = 0; j < vecObjects.size(); ++j)
 		{
-			if ( nullptr == vecObjects[j]->GetRenderComponent()
+			if (nullptr == vecObjects[j]->GetRenderComponent()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMesh()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()->GetShader())
@@ -163,7 +163,7 @@ void CCamera::Render()
 
 	// 물체가 렌더링될 때 사용할 View, Proj 행렬
 	g_Trans.matView = m_matView;
-	g_Trans.matProj = m_matProj;	
+	g_Trans.matProj = m_matProj;
 
 	// Opaque
 	for (size_t i = 0; i < m_vecOpaque.size(); ++i)
@@ -214,24 +214,13 @@ void CCamera::Render()
 }
 
 
+#include "CMRT.h"
 
 void CCamera::render_effect()
 {
-	// 렌더타겟 변경
-	Ptr<CTexture> pEffectTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectTargetTex");
-	Ptr<CTexture> pEffectDepth = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectDepthStencilTex");
-
-	// 클리어
-	CONTEXT->ClearRenderTargetView(pEffectTarget->GetRTV().Get(), Vec4(0.f, 0.f, 0.f, 0.f));
-	CONTEXT->ClearDepthStencilView(pEffectDepth->GetDSV().Get(), D3D11_CLEAR_STENCIL | D3D11_CLEAR_DEPTH, 1.f, 0);
-
-	D3D11_VIEWPORT viewport = {};
-	viewport.Width = pEffectTarget->Width();
-	viewport.Height = pEffectTarget->Height();
-	viewport.MaxDepth = 1.f;
-
-	CONTEXT->RSSetViewports(1, &viewport);
-	CONTEXT->OMSetRenderTargets(1, pEffectTarget->GetRTV().GetAddressOf(), pEffectDepth->GetDSV().Get());
+	// EffectMRT 로 변경
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->Clear();
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->OMSet();
 
 	// Effect
 	for (size_t i = 0; i < m_vecEffect.size(); ++i)
@@ -239,36 +228,23 @@ void CCamera::render_effect()
 		m_vecEffect[i]->Render();
 	}
 
-	// BlurTarget 으로 변경
-	Ptr<CTexture> pEffectBlurTarget = CAssetMgr::GetInst()->FindAsset<CTexture>(L"EffectBlurTargetTex");
+	// EffectBlurMRT 로 변경
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->ClearRT();
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->OMSet();
+
 	Ptr<CMaterial> pBlurMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"BlurMtrl");
 	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 
-	CONTEXT->ClearRenderTargetView(pEffectBlurTarget->GetRTV().Get(), Vec4(0.f, 0.f, 0.f, 0.f));
-
-	CONTEXT->RSSetViewports(1, &viewport);
-	CONTEXT->OMSetRenderTargets(1, pEffectBlurTarget->GetRTV().GetAddressOf(), nullptr);
-
-	pBlurMtrl->SetTexParam(TEX_0, pEffectTarget);
+	pBlurMtrl->SetTexParam(TEX_0, CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->GetRT(0));
 	pBlurMtrl->Binding();
 	pRectMesh->Render_Particle(2);
 
-
-	// 원래 렌더타겟으로 변경
-	Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
-	Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
+	// 원래 렌더타겟(SwapChainMRT) 로 변경	
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::SWAPCHAIN)->OMSet();
 	Ptr<CMaterial> pEffectMergeMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"EffectMergeMtrl");
 
-	viewport.Width = pRTTex->Width();
-	viewport.Height = pRTTex->Height();
-	viewport.MinDepth = 0.f;
-	viewport.MaxDepth = 1.f;
-
-	CONTEXT->RSSetViewports(1, &viewport);
-	CONTEXT->OMSetRenderTargets(1, pRTTex->GetRTV().GetAddressOf(), pDSTex->GetDSV().Get());
-
-	pEffectMergeMtrl->SetTexParam(TEX_0, pEffectTarget);
-	pEffectMergeMtrl->SetTexParam(TEX_1, pEffectBlurTarget);
+	pEffectMergeMtrl->SetTexParam(TEX_0, CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->GetRT(0));
+	pEffectMergeMtrl->SetTexParam(TEX_1, CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->GetRT(0));
 	pEffectMergeMtrl->Binding();
 	pRectMesh->Render();
 }

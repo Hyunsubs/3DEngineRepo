@@ -186,6 +186,7 @@ call EngineHeaderCopy.bat</Command>
     <ClInclude Include="CMaterial.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CMeshRender.h" />
+    <ClInclude Include="CMRT.h" />
     <ClInclude Include="components.h" />
     <ClInclude Include="CParticleSystem.h" />
     <ClInclude Include="CParticleTickCS.h" />
@@ -246,12 +247,14 @@ call EngineHeaderCopy.bat</Command>
     <ClCompile Include="CMaterial.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CMeshRender.cpp" />
+    <ClCompile Include="CMRT.cpp" />
     <ClCompile Include="CParticleSystem.cpp" />
     <ClCompile Include="CParticleTickCS.cpp" />
     <ClCompile Include="CPathMgr.cpp" />
     <ClCompile Include="CPrefab.cpp" />
     <ClCompile Include="CRenderComponent.cpp" />
     <ClCompile Include="CRenderMgr.cpp" />
+    <ClCompile Include="CRenderMgr_Init.cpp" />
     <ClCompile Include="CScript.cpp" />
     <ClCompile Include="CSetColorCS.cpp" />
     <ClCompile Include="CShader.cpp" />

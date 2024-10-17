@@ -20,10 +20,13 @@
 #include "CStructuredBuffer.h"
 
 #include "CKeyMgr.h"
+#include "CMRT.h"
 
 CRenderMgr::CRenderMgr()
 	: m_EditorCamera(nullptr)
 	, m_Light2DBuffer(nullptr)
+	, m_DebugObject(nullptr)
+	, m_arrMRT{}
 {
 	m_Light2DBuffer = new CStructuredBuffer;
 	m_Light3DBuffer = new CStructuredBuffer;
@@ -39,18 +42,8 @@ CRenderMgr::~CRenderMgr()
 
 	if (nullptr != m_Light3DBuffer)
 		delete m_Light3DBuffer;
-}
 
-void CRenderMgr::Init()
-{
-	// AssetMgr 가 초기화될때 만들어둔 후처리용 텍스쳐를 참조한다.
-	m_PostProcessTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"PostProcessTex");
-
-	// 디버그 렌더링용 게임 오브젝트
-	m_DebugObject = new CGameObject;
-	m_DebugObject->AddComponent(new CTransform);
-	m_DebugObject->AddComponent(new CMeshRender);
-	m_DebugObject->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DebugShapeMtrl"));
+	Delete_Array(m_arrMRT);
 }
 
 void CRenderMgr::Tick()
@@ -133,17 +126,14 @@ CCamera* CRenderMgr::GetPOVCam()
 
 void CRenderMgr::RenderStart()
 {
-	// 렌더타겟 지정
-	Ptr<CTexture> pRTTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"RenderTargetTex");
-	Ptr<CTexture> pDSTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"DepthStencilTex");
-	CONTEXT->OMSetRenderTargets(1, pRTTex->GetRTV().GetAddressOf(), pDSTex->GetDSV().Get());
+	// 렌더타겟 클리어 및 지정
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->ClearRT();
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->ClearDS();
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
 
-	// TargetClear
-	float color[4] = { 0.f, 0.f, 0.f, 1.f };
-	CONTEXT->ClearRenderTargetView(pRTTex->GetRTV().Get(), color);
-	CONTEXT->ClearDepthStencilView(pDSTex->GetDSV().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+	// GlobalData 설정
+	g_GlobalData.g_Resolution = CDevice::GetInst()->GetResolution();
 
-	g_GlobalData.g_Resolution = Vec2((float)pRTTex->Width(), (float)pRTTex->Height());
 	g_GlobalData.g_Light2DCount = (int)m_vecLight2D.size();
 	g_GlobalData.g_Light3DCount = (int)m_vecLight3D.size();
 		

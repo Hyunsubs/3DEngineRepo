@@ -46,6 +46,7 @@ CRenderMgr::~CRenderMgr()
 	Delete_Array(m_arrMRT);
 }
 
+
 void CRenderMgr::Tick()
 {
 	CLevel* pCurLevel = CLevelMgr::GetInst()->GetCurrentLevel();
@@ -57,12 +58,15 @@ void CRenderMgr::Tick()
 	// Level 이 Player 상태인 경우, Level 내에 있는 카메라 시점으로 렌더링하기
 	if (PLAY == pCurLevel->GetState())
 	{
-		for (size_t i = 0; i < m_vecCam.size(); ++i)
+		if (nullptr != m_vecCam[0])
+			Render(m_vecCam[0]);
+
+		for (size_t i = 1; i < m_vecCam.size(); ++i)
 		{
 			if (nullptr == m_vecCam[i])
 				continue;
 
-			m_vecCam[i]->Render();
+			Render_Sub(m_vecCam[1]);
 		}
 	}
 
@@ -71,8 +75,8 @@ void CRenderMgr::Tick()
 	{
 		if (nullptr != m_EditorCamera)
 		{
-			m_EditorCamera->Render();
-		}		
+			Render(m_EditorCamera);
+		}
 	}
 
 	// Debug Render
@@ -133,10 +137,9 @@ void CRenderMgr::RenderStart()
 
 	// GlobalData 설정
 	g_GlobalData.g_Resolution = CDevice::GetInst()->GetResolution();
-
 	g_GlobalData.g_Light2DCount = (int)m_vecLight2D.size();
 	g_GlobalData.g_Light3DCount = (int)m_vecLight3D.size();
-		
+
 	// Light2D 정보 업데이트 및 바인딩
 	vector<tLightInfo> vecLight2DInfo;
 	for (size_t i = 0; i < m_vecLight2D.size(); ++i)
@@ -183,7 +186,7 @@ void CRenderMgr::RenderStart()
 		pCam = m_vecCam[0];
 	else
 		pCam = m_EditorCamera;
-	
+
 	if (pCam == nullptr)
 		g_GlobalData.g_CamWorldPos = Vec3(0.f, 0.f, 0.f);
 	else
@@ -194,6 +197,63 @@ void CRenderMgr::RenderStart()
 	static CConstBuffer* pGlobalCB = CDevice::GetInst()->GetConstBuffer(CB_TYPE::GLOBAL);
 	pGlobalCB->SetData(&g_GlobalData);
 	pGlobalCB->Binding();
+}
+
+
+void CRenderMgr::Render(CCamera* _Cam)
+{
+	// 오브젝트 분류
+	_Cam->SortGameObject();
+
+	// 카메라 변환행렬 설정
+	// 물체가 렌더링될 때 사용할 View, Proj 행렬
+	g_Trans.matView = _Cam->GetViewMat();
+	g_Trans.matProj = _Cam->GetProjMat();
+
+	// MRT 모두 클리어
+	ClearMRT();
+
+	// ==================
+	// DEFERRED RENDERING
+	// ==================
+	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->OMSet();
+	_Cam->render_deferred();
+
+	// ===============
+	// LIGHT RENDERING
+	// ===============
+	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
+
+	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
+	{
+		//m_vecLight3D[i]->Render();
+	}
+
+	// ===================================
+	// MERGE ALBEDO + LIGHTS ==> SwapChain
+	// ===================================
+	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
+
+
+
+	// =================
+	// FORWARD RENDERING
+	// =================
+	// 분류된 물체들 렌더링
+	_Cam->render_opaque();
+	_Cam->render_masked();
+	_Cam->render_effect();
+	_Cam->render_transparent();
+	_Cam->render_particle();
+	_Cam->render_postprocess();
+	_Cam->render_ui();
+
+	// 정리
+	_Cam->clear();
+}
+
+void CRenderMgr::Render_Sub(CCamera* _Cam)
+{
 }
 
 void CRenderMgr::Clear()
@@ -212,7 +272,7 @@ void CRenderMgr::RenderDebugShape()
 		switch ((*iter).Shape)
 		{
 		case DEBUG_SHAPE::RECT:
-			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));			
+			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));
 			break;
 		case DEBUG_SHAPE::CIRCLE:
 			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CircleMesh_Debug"));
@@ -225,9 +285,9 @@ void CRenderMgr::RenderDebugShape()
 			break;
 		case DEBUG_SHAPE::SPHERE:
 
-			break;		
+			break;
 		}
-		
+
 		// 위치 세팅
 		m_DebugObject->Transform()->SetWorldMatrix((*iter).matWorld);
 
@@ -256,3 +316,4 @@ void CRenderMgr::RenderDebugShape()
 		}
 	}
 }
+

@@ -49,9 +49,14 @@ public:
 
 private:
     void RenderStart();
+    void Render(CCamera* _Cam);
+    void Render_Sub(CCamera* _Cam);
+
+
     void Clear();
     void RenderDebugShape();
     void CreateMRT();
+    void ClearMRT();
 
 public:
     void Init();

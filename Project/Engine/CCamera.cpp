@@ -1,21 +1,18 @@
 #include "pch.h"
 #include "CCamera.h"
-
 #include "CDevice.h"
-
 #include "CRenderMgr.h"
-
 #include "CLevelMgr.h"
 #include "CLevel.h"
 #include "CLayer.h"
 #include "CGameObject.h"
 #include "CRenderComponent.h"
-
 #include "CTimeMgr.h"
 #include "CKeyMgr.h"
 #include "CTransform.h"
-
 #include "CAssetMgr.h"
+#include "CMRT.h"
+
 
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
@@ -129,6 +126,9 @@ void CCamera::SortGameObject()
 
 			switch (Domain)
 			{
+			case DOMAIN_DEFERRED:
+				m_vecDeferred.push_back(vecObjects[j]);
+				break;
 			case DOMAIN_OPAQUE:
 				m_vecOpaque.push_back(vecObjects[j]);
 				break;
@@ -155,66 +155,42 @@ void CCamera::SortGameObject()
 	}
 }
 
-
-void CCamera::Render()
+void CCamera::render_deferred()
 {
-	// 오브젝트 분류
-	SortGameObject();
+	// Deferred
+	for (size_t i = 0; i < m_vecOpaque.size(); ++i)
+	{
+		m_vecDeferred[i]->Render();
+	}
+}
 
-	// 물체가 렌더링될 때 사용할 View, Proj 행렬
-	g_Trans.matView = m_matView;
-	g_Trans.matProj = m_matProj;
-
+void CCamera::render_opaque()
+{
 	// Opaque
 	for (size_t i = 0; i < m_vecOpaque.size(); ++i)
 	{
 		m_vecOpaque[i]->Render();
 	}
+}
 
+void CCamera::render_masked()
+{
 	// Masked
 	for (size_t i = 0; i < m_vecMasked.size(); ++i)
 	{
 		m_vecMasked[i]->Render();
 	}
+}
 
+void CCamera::render_transparent()
+{
 	// Transparent
 	for (size_t i = 0; i < m_vecTransparent.size(); ++i)
 	{
 		m_vecTransparent[i]->Render();
 	}
-
-	// Particles
-	for (size_t i = 0; i < m_vecParticles.size(); ++i)
-	{
-		m_vecParticles[i]->Render();
-	}
-
-	render_effect();
-
-	// PostProcess 
-	for (size_t i = 0; i < m_vecPostProcess.size(); ++i)
-	{
-		CRenderMgr::GetInst()->PostProcessCopy();
-		m_vecPostProcess[i]->Render();
-	}
-
-	// UI
-	for (size_t i = 0; i < m_vecUI.size(); ++i)
-	{
-		m_vecUI[i]->Render();
-	}
-
-	m_vecOpaque.clear();
-	m_vecMasked.clear();
-	m_vecTransparent.clear();
-	m_vecEffect.clear();
-	m_vecParticles.clear();
-	m_vecPostProcess.clear();
-	m_vecUI.clear();
 }
 
-
-#include "CMRT.h"
 
 void CCamera::render_effect()
 {
@@ -247,6 +223,46 @@ void CCamera::render_effect()
 	pEffectMergeMtrl->SetTexParam(TEX_1, CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->GetRT(0));
 	pEffectMergeMtrl->Binding();
 	pRectMesh->Render();
+}
+
+
+void CCamera::render_particle()
+{
+	// Particles
+	for (size_t i = 0; i < m_vecParticles.size(); ++i)
+	{
+		m_vecParticles[i]->Render();
+	}
+}
+
+void CCamera::render_postprocess()
+{
+	// PostProcess 
+	for (size_t i = 0; i < m_vecPostProcess.size(); ++i)
+	{
+		CRenderMgr::GetInst()->PostProcessCopy();
+		m_vecPostProcess[i]->Render();
+	}
+}
+
+void CCamera::render_ui()
+{
+	// UI
+	for (size_t i = 0; i < m_vecUI.size(); ++i)
+	{
+		m_vecUI[i]->Render();
+	}
+}
+
+void CCamera::clear()
+{
+	m_vecOpaque.clear();
+	m_vecMasked.clear();
+	m_vecTransparent.clear();
+	m_vecEffect.clear();
+	m_vecParticles.clear();
+	m_vecPostProcess.clear();
+	m_vecUI.clear();
 }
 
 

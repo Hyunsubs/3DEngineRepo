@@ -24,7 +24,10 @@
 void CTestLevel::CreateTestLevel()
 {
 	// Material
-	Ptr<CMaterial> pMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3DMtrl");
+	Ptr<CMaterial> pStd3DMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3DMtrl");
+	Ptr<CMaterial> pStd3D_DeferredMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl");
+
+
 
 	// Level »ý¼º
 	CLevel* pLevel = new CLevel;
@@ -86,13 +89,13 @@ void CTestLevel::CreateTestLevel()
 	pSkyBox->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 	pSkyBox->Transform()->SetRelativeScale(1000.f, 1000.f, 1000.f);
 
-	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
-	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pSkyBox->SkyBox()->SetSkyBoxType(CUBE);		
-
-	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky01.png");
+	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
 	//pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	//pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
+	//pSkyBox->SkyBox()->SetSkyBoxType(CUBE);		
+
+	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky01.png");
+	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
+	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
 
 	pLevel->AddObject(0, pSkyBox);
 
@@ -107,7 +110,7 @@ void CTestLevel::CreateTestLevel()
 	pPlayer->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
 
 	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
-	pPlayer->MeshRender()->SetMaterial(pMtrl);
+	pPlayer->MeshRender()->SetMaterial(pStd3D_DeferredMtrl);
 
 	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_albedo.TGA");
 	Ptr<CTexture> pNTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");

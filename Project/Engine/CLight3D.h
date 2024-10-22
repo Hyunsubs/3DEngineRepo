@@ -6,6 +6,11 @@ class CLight3D :
 {
 private:
     tLightInfo      m_Info;
+    int             m_LightIdx;
+
+    Ptr<CMesh>      m_VolumeMesh;
+    Ptr<CMaterial>  m_LightMtrl;
+
 
 public:
     void SetLightType(LIGHT_TYPE _Type);
@@ -28,6 +33,11 @@ public:
     virtual void FinalTick() override;
     virtual void SaveToFile(FILE* _File) override;
     virtual void LoadFromFile(FILE* _File) override;
+
+
+    void Render();
+
+
 public:
     CLONE(CLight3D);
     CLight3D();

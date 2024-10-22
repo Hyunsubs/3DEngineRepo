@@ -226,14 +226,15 @@ void CRenderMgr::Render(CCamera* _Cam)
 
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
-		//m_vecLight3D[i]->Render();
+		m_vecLight3D[i]->Render();
 	}
 
 	// ===================================
 	// MERGE ALBEDO + LIGHTS ==> SwapChain
 	// ===================================
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-
+	m_MergeMtrl->Binding();
+	m_RectMesh->Render();
 
 
 	// =================

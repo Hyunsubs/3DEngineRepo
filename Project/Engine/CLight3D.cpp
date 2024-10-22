@@ -4,9 +4,14 @@
 #include "CRenderMgr.h"
 #include "CTransform.h"
 
+#include "CAssetMgr.h"
+
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
+	, m_Info{}
+	, m_LightIdx(-1)
 {
+	SetLightType(LIGHT_TYPE::DIRECTIONAL);
 }
 
 CLight3D::~CLight3D()
@@ -16,6 +21,24 @@ CLight3D::~CLight3D()
 void CLight3D::SetLightType(LIGHT_TYPE _Type)
 {
 	m_Info.Type = _Type;
+
+	if (m_Info.Type == LIGHT_TYPE::DIRECTIONAL)
+	{
+		m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+		m_LightMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DirLightMtrl");
+	}
+
+	else if (m_Info.Type == LIGHT_TYPE::POINT)
+	{
+		m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh");
+		m_LightMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"PointLightMtrl");
+	}
+
+	else if (m_Info.Type == LIGHT_TYPE::SPOT)
+	{
+		m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"ConeMesh");
+		m_LightMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"SpotLightMtrl");
+	}
 }
 
 void CLight3D::FinalTick()
@@ -24,7 +47,17 @@ void CLight3D::FinalTick()
 	m_Info.WorldDir = Transform()->GetWorldDir(DIR::FRONT);
 
 	// 자신을 RenderMgr 에 등록시킴
-	CRenderMgr::GetInst()->RegisterLight3D(this);
+	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
+}
+
+
+void CLight3D::Render()
+{
+	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx);
+	m_LightMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	m_LightMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	m_LightMtrl->Binding();
+	m_VolumeMesh->Render();
 }
 
 void CLight3D::SaveToFile(FILE* _File)

@@ -14,17 +14,17 @@ class CRenderMgr :
     SINGLE(CRenderMgr)
 private:
     vector<CCamera*>        m_vecCam;
-    CCamera*                m_EditorCamera;
+    CCamera* m_EditorCamera;
 
-    CGameObject*            m_DebugObject;
+    CGameObject* m_DebugObject;
     list<tDebugShapeInfo>   m_DebugShapeList;
 
     // Light
     vector<CLight2D*>       m_vecLight2D;
-    CStructuredBuffer*      m_Light2DBuffer;
+    CStructuredBuffer* m_Light2DBuffer;
 
     vector<CLight3D*>       m_vecLight3D;
-    CStructuredBuffer*      m_Light3DBuffer;
+    CStructuredBuffer* m_Light3DBuffer;
 
     // PostProcess
     Ptr<CTexture>           m_PostProcessTex;
@@ -32,14 +32,19 @@ private:
     // DownScale
     Ptr<CTexture>           m_DownScaleTex;
 
-    CMRT*                   m_arrMRT[(UINT)MRT_TYPE::END];
+    // MRT
+    CMRT* m_arrMRT[(UINT)MRT_TYPE::END];
+
+    // ∫¥«’ Ω¶¿Ã¥ı
+    Ptr<CMesh>              m_RectMesh;
+    Ptr<CMaterial>          m_MergeMtrl;
 
 public:
     void RegisterCamera(CCamera* _Cam, int _CamPriority);
     void RegisterEditorCamera(CCamera* _Cam) { m_EditorCamera = _Cam; }
     void AddDebugShapeInfo(const tDebugShapeInfo& _Info) { m_DebugShapeList.push_back(_Info); }
-    void RegisterLight2D(CLight2D* _Light) { m_vecLight2D.push_back(_Light); }    
-    void RegisterLight3D(CLight3D* _Light) { m_vecLight3D.push_back(_Light); }
+    void RegisterLight2D(CLight2D* _Light) { m_vecLight2D.push_back(_Light); }
+    int RegisterLight3D(CLight3D* _Light) { m_vecLight3D.push_back(_Light); return m_vecLight3D.size() - 1; }
     void PostProcessCopy();
 
     CMRT* GetMRT(MRT_TYPE _Type) { return m_arrMRT[(UINT)_Type]; }
@@ -52,11 +57,11 @@ private:
     void Render(CCamera* _Cam);
     void Render_Sub(CCamera* _Cam);
 
-
     void Clear();
     void RenderDebugShape();
     void CreateMRT();
     void ClearMRT();
+    void CreateMaterial();
 
 public:
     void Init();

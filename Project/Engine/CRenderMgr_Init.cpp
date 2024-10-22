@@ -9,7 +9,6 @@
 #include "CDevice.h"
 #include "CMRT.h"
 
-
 void CRenderMgr::Init()
 {
 	// AssetMgr 가 초기화될때 만들어둔 후처리용 텍스쳐를 참조한다.
@@ -23,12 +22,14 @@ void CRenderMgr::Init()
 
 	// MRT 생성
 	CreateMRT();
+
+	// RenderMgr 전용 재질 생성
+	CreateMaterial();
 }
+
 
 void CRenderMgr::CreateMRT()
 {
-	CMRT* pMRT = nullptr;
-
 	// =============
 	// SwapChain MRT
 	// =============
@@ -55,7 +56,6 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::EFFECT]->SetName(L"Effect");
 		m_arrMRT[(UINT)MRT_TYPE::EFFECT]->Create(1, arrRT, pDSTex);
 		m_arrMRT[(UINT)MRT_TYPE::EFFECT]->SetClearColor(arrClearColor, false);
-
 	}
 
 	// ===============
@@ -71,6 +71,8 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::EFFECT_BLUR]->Create(1, arrRT, nullptr);
 		m_arrMRT[(UINT)MRT_TYPE::EFFECT_BLUR]->SetClearColor(arrClearColor, false);
 	}
+
+
 	// ========
 	// Deferred
 	// ========
@@ -141,4 +143,44 @@ void CRenderMgr::ClearMRT()
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Clear();
 	m_arrMRT[(UINT)MRT_TYPE::DEFERRED]->ClearRT();
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->ClearRT();
+}
+
+void CRenderMgr::CreateMaterial()
+{
+	// DirLightShader
+	Ptr<CGraphicShader> pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\light.fx", "VS_DirLight");
+	pShader->CreatePixelShader(L"shader\\light.fx", "PS_DirLight");
+	pShader->SetRSType(RS_TYPE::CULL_BACK);
+	pShader->SetBSType(BS_TYPE::ONE_ONE);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
+	CAssetMgr::GetInst()->AddAsset(L"DirLightShader", pShader);
+
+	// DirLightMtrl
+	Ptr<CMaterial> pMtrl = new CMaterial(true);
+	pMtrl->SetShader(pShader);
+	pMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	CAssetMgr::GetInst()->AddAsset(L"DirLightMtrl", pMtrl);
+
+
+	// MergeShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\merge.fx", "VS_Merge");
+	pShader->CreatePixelShader(L"shader\\merge.fx", "PS_Merge");
+	pShader->SetRSType(RS_TYPE::CULL_BACK);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_NONE);
+
+	// MergeMtrl
+	m_MergeMtrl = new CMaterial(true);
+	m_MergeMtrl->SetShader(pShader);
+	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
+	m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+
+	// RectMesh
+	m_RectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 }

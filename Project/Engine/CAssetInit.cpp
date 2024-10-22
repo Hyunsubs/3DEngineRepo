@@ -681,6 +681,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->AddTexParam(TEX_0, "Albedo Texture");
 
 	AddAsset(L"SkyBoxShader", pShader);
+
 }
 
 #include "CParticleTickCS.h"
@@ -771,4 +772,5 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"SkyBoxShader"));
 	AddAsset(L"SkyBoxMtrl", pMtrl);
+
 }

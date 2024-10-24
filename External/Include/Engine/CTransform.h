@@ -12,6 +12,7 @@ private:
     Vec3    m_WorldDir[3];
 
     Matrix  m_matWorld;         // 이동, 크기, 회전
+    Matrix  m_matWorldInv;
     bool    m_IndependentScale; // 부모의 크기에 영향받지 않음
 
 public:

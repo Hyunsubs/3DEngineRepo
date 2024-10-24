@@ -161,6 +161,7 @@ call EngineHeaderCopy.bat</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="assets.h" />
+    <ClInclude Include="CDecal.h" />
     <ClInclude Include="CFlipBookComponent.h" />
     <ClInclude Include="CAsset.h" />
     <ClInclude Include="CAssetMgr.h" />
@@ -221,6 +222,7 @@ call EngineHeaderCopy.bat</Command>
     <ClInclude Include="struct.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDecal.cpp" />
     <ClCompile Include="CFlipBookComponent.cpp" />
     <ClCompile Include="CAsset.cpp" />
     <ClCompile Include="CAssetInit.cpp" />

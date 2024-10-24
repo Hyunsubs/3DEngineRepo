@@ -14,6 +14,14 @@ CLight3D::CLight3D()
 	SetLightType(LIGHT_TYPE::DIRECTIONAL);
 }
 
+CLight3D::CLight3D(const CLight3D& _Origin)
+	: CComponent(COMPONENT_TYPE::LIGHT3D)
+	, m_Info(_Origin.m_Info)
+	, m_LightIdx(-1)
+{
+	SetLightType(m_Info.Type);
+}
+
 CLight3D::~CLight3D()
 {
 }
@@ -48,15 +56,27 @@ void CLight3D::FinalTick()
 
 	// 자신을 RenderMgr 에 등록시킴
 	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
+
+	// PointLight, SphereMesh, r = 0.5f
+	Transform()->SetRelativeScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, m_Info.Radius * 2.f);
 }
 
 
+void CLight3D::SetRadius(float _Radius)
+{
+	m_Info.Radius = _Radius;
+
+	// PointLight, SphereMesh, r = 0.5f
+	Transform()->SetRelativeScale(_Radius * 2.f, _Radius * 2.f, _Radius * 2.f);
+}
+
 void CLight3D::Render()
 {
+	Transform()->Binding();
+
 	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx);
-	m_LightMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	m_LightMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
 	m_LightMtrl->Binding();
+
 	m_VolumeMesh->Render();
 }
 

@@ -13,6 +13,13 @@ CSkyBox::CSkyBox()
 	SetSkyBoxType(m_Type);
 }
 
+CSkyBox::CSkyBox(const CSkyBox& _Origin)
+	: CRenderComponent(COMPONENT_TYPE::SKYBOX)
+	, m_Type(SPHERE)
+{
+	SetSkyBoxType(m_Type);
+}
+
 CSkyBox::~CSkyBox()
 {
 }

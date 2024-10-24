@@ -333,6 +333,13 @@ void CAssetMgr::CreateEngineMesh()
 	pMesh->Create(arrCube, 24, vecIdx.data(), (UINT)vecIdx.size());
 	AddAsset(L"CubeMesh", pMesh);
 
+	vecIdx.clear();
+
+	// CubeMesh_Debug
+	pMesh = new CMesh(true);
+	pMesh->Create(arrCube, 24, vecIdx.data(), (UINT)vecIdx.size());
+	AddAsset(L"CubeMesh_Debug", pMesh);
+
 	vecVtx.clear();
 	vecIdx.clear();
 

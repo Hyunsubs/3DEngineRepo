@@ -209,6 +209,8 @@ void CRenderMgr::Render(CCamera* _Cam)
 	// 물체가 렌더링될 때 사용할 View, Proj 행렬
 	g_Trans.matView = _Cam->GetViewMat();
 	g_Trans.matProj = _Cam->GetProjMat();
+	g_Trans.matViewInv = _Cam->GetViewMatInv();
+	g_Trans.matProjInv = _Cam->GetProjMatInv();
 
 	// MRT 모두 클리어
 	ClearMRT();
@@ -222,6 +224,7 @@ void CRenderMgr::Render(CCamera* _Cam)
 	// ===============
 	// LIGHT RENDERING
 	// ===============
+
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
 
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
@@ -282,10 +285,10 @@ void CRenderMgr::RenderDebugShape()
 
 			break;
 		case DEBUG_SHAPE::CUBE:
-
+			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CubeMesh_Debug"));
 			break;
 		case DEBUG_SHAPE::SPHERE:
-
+			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
 			break;
 		}
 

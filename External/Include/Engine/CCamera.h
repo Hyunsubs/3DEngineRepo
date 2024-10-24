@@ -27,6 +27,8 @@ private:
 
     Matrix                  m_matView;
     Matrix                  m_matProj;
+    Matrix                  m_matViewInv;
+    Matrix                  m_matProjInv;
 
     vector<CGameObject*>    m_vecDeferred;      // Deferred
     vector<CGameObject*>    m_vecOpaque;        // ∫“≈ı∏Ì
@@ -82,6 +84,8 @@ public:
 
     const Matrix& GetViewMat() { return m_matView; }
     const Matrix& GetProjMat() { return m_matProj; }
+    const Matrix& GetViewMatInv() { return m_matViewInv; }
+    const Matrix& GetProjMatInv() { return m_matProjInv; }
 
 
 private:

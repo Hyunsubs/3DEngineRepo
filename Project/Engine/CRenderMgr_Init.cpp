@@ -164,6 +164,24 @@ void CRenderMgr::CreateMaterial()
 	pMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
 	CAssetMgr::GetInst()->AddAsset(L"DirLightMtrl", pMtrl);
 
+	// PointLightShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\light.fx", "VS_PointLight");
+	pShader->CreatePixelShader(L"shader\\light.fx", "PS_PointLight");
+	pShader->SetRSType(RS_TYPE::CULL_FRONT);
+	pShader->SetBSType(BS_TYPE::ONE_ONE);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
+	CAssetMgr::GetInst()->AddAsset(L"PointLightShader", pShader);
+
+	// PointLightMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(pShader);
+	pMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
+	pMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
+	CAssetMgr::GetInst()->AddAsset(L"PointLightMtrl", pMtrl);
+
+
 
 	// MergeShader
 	pShader = new CGraphicShader;
@@ -180,6 +198,7 @@ void CRenderMgr::CreateMaterial()
 	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
+	
 
 	// RectMesh
 	m_RectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");

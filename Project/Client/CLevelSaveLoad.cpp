@@ -245,8 +245,8 @@ CComponent* CLevelSaveLoad::GetComponent(COMPONENT_TYPE _Type)
 	case COMPONENT_TYPE::PARTICLESYSTEM:
 		break;
 
-	case COMPONENT_TYPE::DECAl:
-		break;
+	case COMPONENT_TYPE::DECAL:
+			return new CDecal;
 
 	case COMPONENT_TYPE::SKYBOX:
 		break;

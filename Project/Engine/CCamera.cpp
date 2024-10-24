@@ -46,15 +46,6 @@ void CCamera::Begin()
 
 void CCamera::FinalTick()
 {
-	/*Vec3 vWorldPos = Transform()->GetRelativePos();
-
-	if (KEY_PRESSED(KEY::LEFT))
-		vWorldPos.x -= DT * 1.f;
-	if(KEY_PRESSED(KEY::RIGHT))
-		vWorldPos.x += DT * 1.f;
-
-	Transform()->SetRelativePos(vWorldPos);*/
-
 	// View Space 란 카메라가 좌표계의 기준이 되는 좌표계
 	// 1. 카메라가 원점에 존재
 	// 2. 카메라가 바라보는 방향이 Z 축
@@ -78,7 +69,7 @@ void CCamera::FinalTick()
 	matRot._31 = vR.z; matRot._32 = vU.z; matRot._33 = vF.z;
 
 	m_matView = matTrans * matRot;
-
+	m_matViewInv = XMMatrixInverse(NULL, m_matView);
 
 	// Projection Space 투영 좌표계 (NDC)
 	if (PROJ_TYPE::ORTHOGRAPHIC == m_ProjType)
@@ -94,6 +85,8 @@ void CCamera::FinalTick()
 		// 2. 원근투영 (Perspective)		
 		m_matProj = XMMatrixPerspectiveFovLH(m_FOV, m_AspectRatio, 1.f, m_Far);
 	}
+
+	m_matProjInv = XMMatrixInverse(NULL, m_matProj);
 }
 
 
@@ -158,7 +151,7 @@ void CCamera::SortGameObject()
 void CCamera::render_deferred()
 {
 	// Deferred
-	for (size_t i = 0; i < m_vecOpaque.size(); ++i)
+	for (size_t i = 0; i < m_vecDeferred.size(); ++i)
 	{
 		m_vecDeferred[i]->Render();
 	}
@@ -256,6 +249,7 @@ void CCamera::render_ui()
 
 void CCamera::clear()
 {
+	m_vecDeferred.clear();
 	m_vecOpaque.clear();
 	m_vecMasked.clear();
 	m_vecTransparent.clear();

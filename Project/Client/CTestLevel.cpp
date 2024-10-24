@@ -60,21 +60,20 @@ void CTestLevel::CreateTestLevel()
 
 	CGameObject* pObject = nullptr;
 
-
 	// 3D 광원 추가
 	pObject = new CGameObject;
-	pObject->SetName(L"Directinal Light");
+	pObject->SetName(L"Directional Light");
 	pObject->AddComponent(new CTransform);
 	pObject->AddComponent(new CLight3D);
 
-	pObject->Transform()->SetRelativePos(-300.f, 0.f, 0.f);
+	pObject->Transform()->SetRelativePos(-100.f, -300.f, 0.f);
 	pObject->Transform()->SetRelativeRotation(XM_PI / 4.f, XM_PI / 4.f, 0.f);
 
 	pObject->Light3D()->SetLightType(LIGHT_TYPE::DIRECTIONAL);
 	pObject->Light3D()->SetLightColor(Vec3(0.9f, 0.9f, 0.9f));
-	pObject->Light3D()->SetLightAmbient(Vec3(0.1f, 0.1f, 0.1f));
+	pObject->Light3D()->SetLightAmbient(Vec3(0.f, 0.f, 0.f));
 	pObject->Light3D()->SetSpecularCoefficient(0.3f);
-	pObject->Light3D()->SetRadius(800.f);
+	pObject->Light3D()->SetRadius(400.f);
 
 	pLevel->AddObject(0, pObject);
 
@@ -89,36 +88,60 @@ void CTestLevel::CreateTestLevel()
 	pSkyBox->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 	pSkyBox->Transform()->SetRelativeScale(1000.f, 1000.f, 1000.f);
 
-	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
-	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pSkyBox->SkyBox()->SetSkyBoxType(CUBE);		
-
-	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky01.png");
+	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
 	//pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	//pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
+	//pSkyBox->SkyBox()->SetSkyBoxType(CUBE);		
+
+	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
+	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
+	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
 
 	pLevel->AddObject(0, pSkyBox);
 
-	// 플레이어 오브젝트
+	// 평면 오브젝트
+	CGameObject* pPlane = new CGameObject;
+	pPlane->SetName(L"Plane");
+	pPlane->AddComponent(new CTransform);
+	pPlane->AddComponent(new CMeshRender);
+
+	pPlane->Transform()->SetRelativePos(0.f, -500.f, 0.f);
+	pPlane->Transform()->SetRelativeScale(4000.f, 4000.f, 1.f);
+	pPlane->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
+
+	pPlane->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	pPlane->MeshRender()->SetMaterial(pStd3D_DeferredMtrl);
+
+	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_albedo.TGA");
+	Ptr<CTexture> pNTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
+
+	pPlane->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
+	pPlane->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
+	pLevel->AddObject(3, pPlane);
+
+
+	// Player 추가
 	CGameObject* pPlayer = new CGameObject;
 	pPlayer->SetName(L"Player");
 	pPlayer->AddComponent(new CTransform);
 	pPlayer->AddComponent(new CMeshRender);
 
-	pPlayer->Transform()->SetRelativePos(0.f, -500.f, 0.f);
-	pPlayer->Transform()->SetRelativeScale(1000.f, 1000.f, 1.f);
-	pPlayer->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
+	pPlayer->Transform()->SetRelativePos(0.f, 0.f, 0.f);
+	pPlayer->Transform()->SetRelativeScale(500.f, 500.f, 500.f);
+	pPlayer->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
 
-	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	pPlayer->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
 	pPlayer->MeshRender()->SetMaterial(pStd3D_DeferredMtrl);
 
-	Ptr<CTexture> pTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_albedo.TGA");
-	Ptr<CTexture> pNTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\LandScapeTexture\\gl1_ground_II_normal.TGA");
-
 	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
-	//pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
-
+	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
 	pLevel->AddObject(3, pPlayer);
+
+	// Decal Object 추가
+	CGameObject* pDecal = new CGameObject;
+	pDecal->SetName(L"Decal");
+	pDecal->AddComponent(new CTransform);
+	pDecal->AddComponent(new CDecal);
+	pLevel->AddObject(3, pDecal);
 
 	ChangeLevel(pLevel, LEVEL_STATE::STOP);
 

@@ -155,6 +155,7 @@ enum class DEBUG_SHAPE
 	LINE,
 	CUBE,
 	SPHERE,
+	CONE,
 };
 
 enum TASK_TYPE

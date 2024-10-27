@@ -44,10 +44,11 @@ public:
 template<typename T>
 void CMaterial::SetScalarParam(SCALAR_PARAM _Param, const T& _Data)
 {
-    if constexpr (std::is_same_v<T, int>) { m_Const.iArr[_Param] = _Data; }  
-    if constexpr (std::is_same_v<T, float>) { m_Const.fArr[_Param - FLOAT_0] = _Data; } 
-    if constexpr (std::is_same_v<T, Vec2>) { m_Const.v2Arr[_Param - VEC2_0] = _Data; } 
-    if constexpr (std::is_same_v<T, Vec4>) { m_Const.v4Arr[_Param - VEC4_0] = _Data; } 
-    if constexpr (std::is_same_v<T, Matrix>) { m_Const.matArr[_Param - MAT_0] = _Data; }
+    if constexpr (std::is_same_v<T, int>) { m_Const.iArr[_Param] = _Data; return; }
+    if constexpr (std::is_same_v<T, float>) { m_Const.fArr[_Param - FLOAT_0] = _Data; return; }
+    if constexpr (std::is_same_v<T, Vec2>) { m_Const.v2Arr[_Param - VEC2_0] = _Data; return; }
+    if constexpr (std::is_same_v<T, Vec4>) { m_Const.v4Arr[_Param - VEC4_0] = _Data; return; }
+    if constexpr (std::is_same_v<T, Matrix>) { m_Const.matArr[_Param - MAT_0] = _Data; return; }
+
+    assert(nullptr);
 }
-  

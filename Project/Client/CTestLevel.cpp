@@ -141,6 +141,10 @@ void CTestLevel::CreateTestLevel()
 	pDecal->SetName(L"Decal");
 	pDecal->AddComponent(new CTransform);
 	pDecal->AddComponent(new CDecal);
+
+	pDecal->Transform()->SetRelativePos(0.f, 0.f, 1000.f);
+	pDecal->Transform()->SetRelativeScale(100.f, 100.f, 100.f);
+
 	pLevel->AddObject(3, pDecal);
 
 	ChangeLevel(pLevel, LEVEL_STATE::STOP);

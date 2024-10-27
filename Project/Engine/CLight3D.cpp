@@ -57,8 +57,20 @@ void CLight3D::FinalTick()
 	// 자신을 RenderMgr 에 등록시킴
 	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
 
-	// PointLight, SphereMesh, r = 0.5f
-	Transform()->SetRelativeScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, m_Info.Radius * 2.f);
+
+	// Debug Shape
+	if (m_Info.Type == LIGHT_TYPE::SPOT)
+	{
+		DrawDebugCone(Transform()->GetWorldMat(), Vec4(0.f, 1.f, 0.f, 1.f), 0.f, true);
+		Transform()->SetRelativeScale(m_Info.Radius * 2.f * m_Info.Angle / 2.f, m_Info.Radius * 2.f * m_Info.Angle / 2.f, m_Info.Radius);
+	}
+	 
+	// Debug Shape
+	if (m_Info.Type == LIGHT_TYPE::POINT)
+	{
+		DrawDebugSphere(Transform()->GetWorldMat(), Vec4(0.f, 1.f, 0.f, 1.f), 0.f, true);
+		Transform()->SetRelativeScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, m_Info.Radius * 2.f);
+	}
 }
 
 
@@ -66,14 +78,14 @@ void CLight3D::SetRadius(float _Radius)
 {
 	m_Info.Radius = _Radius;
 
-	// PointLight, SphereMesh, r = 0.5f
-	Transform()->SetRelativeScale(_Radius * 2.f, _Radius * 2.f, _Radius * 2.f);
 }
 
 void CLight3D::Render()
 {
 	Transform()->Binding();
 
+	if (m_Info.Type == LIGHT_TYPE::SPOT)
+		m_LightMtrl->SetScalarParam(FLOAT_0, m_Info.Angle);
 	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx);
 	m_LightMtrl->Binding();
 

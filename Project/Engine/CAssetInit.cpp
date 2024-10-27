@@ -336,6 +336,11 @@ void CAssetMgr::CreateEngineMesh()
 	vecIdx.clear();
 
 	// CubeMesh_Debug
+	vecIdx.push_back(0); vecIdx.push_back(1); vecIdx.push_back(2); vecIdx.push_back(3); vecIdx.push_back(4);
+	vecIdx.push_back(7); vecIdx.push_back(6); vecIdx.push_back(5); vecIdx.push_back(4); vecIdx.push_back(3);
+	vecIdx.push_back(0); vecIdx.push_back(7); vecIdx.push_back(6); vecIdx.push_back(1); vecIdx.push_back(2);
+	vecIdx.push_back(5);
+
 	pMesh = new CMesh(true);
 	pMesh->Create(arrCube, 24, vecIdx.data(), (UINT)vecIdx.size());
 	AddAsset(L"CubeMesh_Debug", pMesh);
@@ -452,6 +457,55 @@ void CAssetMgr::CreateEngineMesh()
 	AddAsset(L"SphereMesh", pMesh);
 	vecVtx.clear();
 	vecIdx.clear();
+
+	// Cone Mesh
+	fRadius = 0.5f;
+	float fHeight = 1.0f;
+
+	// Top
+	v.vPos = Vec3(0.f, 0.f, 0.f);
+	v.vUV = Vec2(0.5f, 0.f);
+	v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+	v.vNormal = Vec3(0.f, 0.f, -1.f);
+	v.vTangent = Vec3(1.f, 0.f, 0.f);
+	v.vBinormal = Vec3(0.f, 1.f, 0.f);
+	vecVtx.push_back(v);
+
+	// Body
+	iSliceCount = 40; // 원뿔의 세로 분할 개수
+
+	fSliceAngle = XM_2PI / iSliceCount;
+
+	fUVXStep = 1.f / (float)iSliceCount;
+	fUVYStep = 1.f;
+
+	for (UINT i = 0; i <= iSliceCount; ++i)
+	{
+		float theta = i * fSliceAngle;
+
+		v.vPos = Vec3(fRadius * cosf(theta), fRadius * sinf(theta), fHeight);
+		v.vUV = Vec2(fUVXStep * i, fUVYStep);
+		v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
+		v.vNormal = Vec3(0.f, 0.f, 1.f);
+		v.vTangent = Vec3(1.f, 0.f, 0.f);
+		v.vBinormal = Vec3(0.f, 1.f, 0.f);
+		vecVtx.push_back(v);
+
+		// 인덱스
+		if (i < iSliceCount)
+		{
+			vecIdx.push_back(0);
+			vecIdx.push_back(i + 2);
+			vecIdx.push_back(i + 1);
+		}
+	}
+
+	pMesh = new CMesh(true);
+	pMesh->Create(vecVtx.data(), (UINT)vecVtx.size(), vecIdx.data(), (UINT)vecIdx.size());
+	AddAsset(L"ConeMesh", pMesh);
+	vecVtx.clear();
+	vecIdx.clear();
+
 }
 
 void CAssetMgr::CreateEngineTexture()
@@ -575,11 +629,28 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetDSType(DS_TYPE::LESS);
-	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetBSType(BS_TYPE::ALPHABLEND);
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEBUG);
 
 	AddAsset(L"DebugShapeShader", pShader);
+
+	// DebugLineShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\debug.fx", "VS_DebugLine");
+	pShader->CreateGeometryShader(L"shader\\debug.fx", "GS_DebugLine");
+	pShader->CreatePixelShader(L"shader\\debug.fx", "PS_DebugLine");
+
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::ALPHABLEND);
+
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEBUG);
+
+	AddAsset(L"DebugLineShader", pShader);
+
 
 
 	// TileMapShader

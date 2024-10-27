@@ -114,24 +114,24 @@ void CalculateLight3D(int _LightIdx, float3 _ViewNormal, float3 _ViewPos, inout 
     else if (2 == LightInfo.Type)
     {
         // 표면 위치에서 광원의 위치를 뺀다. 광원에서 표면을 향하는 방향벡터를 구할 수 있다.
-        float3 vLightViewPos = mul(float4(LightInfo.WorldPos, 1.f), matView).xyz;
-        float3 vLightToPlane = normalize(_ViewPos - vLightViewPos);
         float3 vLightDir = normalize(LightInfo.WorldDir);
-        
         LightPow = saturate(dot(-vLightDir, _ViewNormal));
-        
-        // 거리에 따른 빛의 세기 감소량을 계산한다.
-        float Distance = length(vLightViewPos - _ViewPos);
-        float CamDistance = length(_ViewPos);
- 
-        Ratio = saturate(cos((PI / 2.f) * saturate(Distance / LightInfo.Radius)));
-        SpecRatio = saturate(cos(PI / 2.f) * saturate(CamDistance / LightInfo.Radius));
-        
-        if (saturate(dot(vLightToPlane, vLightDir)) <= cos(radians(LightInfo.Angle / 2.f)))
-        {
-            Ratio = 0.f;
-            SpecRatio = 0.f;
-        }
+            
+        // 반사광 계산
+        // vR = vL + 2 * dot(-vL, vN) * vN;
+        float3 vReflect = vLightDir + 2 * dot(-vLightDir, _ViewNormal) * _ViewNormal;
+        vReflect = normalize(vReflect);
+            
+        // 카메라에서 물체를 향하는 vEye 를 구한다. 카메라는 원점에 있다.
+        // 픽셀의 뷰스페이스 위치가 곧 카메라에서 물체를 향하는 Eye 방향이다.
+        float3 vEye = normalize(_ViewPos);
+    
+        // 반사 방향과 시선 벡터를 내적해서 둘 사이의 벌어진 각도에 대한 cos 값을 반사광의 세기로 사용한다.
+        SpecularPow = saturate(dot(vReflect, -vEye));
+        SpecularPow = pow(SpecularPow, 15);
+             
+        Ratio = 1.f;
+        SpecRatio = 1.f;
         
     }
       

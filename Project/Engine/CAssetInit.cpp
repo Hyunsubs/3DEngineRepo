@@ -457,55 +457,6 @@ void CAssetMgr::CreateEngineMesh()
 	AddAsset(L"SphereMesh", pMesh);
 	vecVtx.clear();
 	vecIdx.clear();
-
-	// Cone Mesh
-	fRadius = 0.5f;
-	float fHeight = 1.0f;
-
-	// Top
-	v.vPos = Vec3(0.f, 0.f, 0.f);
-	v.vUV = Vec2(0.5f, 0.f);
-	v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
-	v.vNormal = Vec3(0.f, 0.f, -1.f);
-	v.vTangent = Vec3(1.f, 0.f, 0.f);
-	v.vBinormal = Vec3(0.f, 1.f, 0.f);
-	vecVtx.push_back(v);
-
-	// Body
-	iSliceCount = 40; // 원뿔의 세로 분할 개수
-
-	fSliceAngle = XM_2PI / iSliceCount;
-
-	fUVXStep = 1.f / (float)iSliceCount;
-	fUVYStep = 1.f;
-
-	for (UINT i = 0; i <= iSliceCount; ++i)
-	{
-		float theta = i * fSliceAngle;
-
-		v.vPos = Vec3(fRadius * cosf(theta), fRadius * sinf(theta), fHeight);
-		v.vUV = Vec2(fUVXStep * i, fUVYStep);
-		v.vColor = Vec4(1.f, 1.f, 1.f, 1.f);
-		v.vNormal = Vec3(0.f, 0.f, 1.f);
-		v.vTangent = Vec3(1.f, 0.f, 0.f);
-		v.vBinormal = Vec3(0.f, 1.f, 0.f);
-		vecVtx.push_back(v);
-
-		// 인덱스
-		if (i < iSliceCount)
-		{
-			vecIdx.push_back(0);
-			vecIdx.push_back(i + 2);
-			vecIdx.push_back(i + 1);
-		}
-	}
-
-	pMesh = new CMesh(true);
-	pMesh->Create(vecVtx.data(), (UINT)vecVtx.size(), vecIdx.data(), (UINT)vecIdx.size());
-	AddAsset(L"ConeMesh", pMesh);
-	vecVtx.clear();
-	vecIdx.clear();
-
 }
 
 void CAssetMgr::CreateEngineTexture()
@@ -652,7 +603,6 @@ void CAssetMgr::CreateEngineGraphicShader()
 	AddAsset(L"DebugLineShader", pShader);
 
 
-
 	// TileMapShader
 	pShader = new CGraphicShader;
 
@@ -743,6 +693,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetDSType(DS_TYPE::LESS);
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
+
 	pShader->AddTexParam(TEX_0, "Albedo Texture");
 	pShader->AddTexParam(TEX_1, "Normal Texture");
 	AddAsset(L"Std3D_DeferredShader", pShader);
@@ -757,9 +708,23 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
 
 	pShader->AddTexParam(TEX_0, "Albedo Texture");
-
+	
 	AddAsset(L"SkyBoxShader", pShader);
 
+	// DecalShader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\decal.fx", "VS_Decal");
+	pShader->CreatePixelShader(L"shader\\decal.fx", "PS_Decal");
+	pShader->SetRSType(RS_TYPE::CULL_FRONT);
+	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
+	pShader->SetBSType(BS_TYPE::DECAL);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DECAL);
+
+	pShader->AddTexParam(TEX_0, "Decal Texture");
+
+	AddAsset(L"DecalShader", pShader);
+
+	
 }
 
 #include "CParticleTickCS.h"
@@ -846,9 +811,13 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"Std3D_DeferredShader"));
 	AddAsset(L"Std3D_DeferredMtrl", pMtrl);
 
-	//SkyBoxMtrl
+	// SkyBoxMtrl
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"SkyBoxShader"));
 	AddAsset(L"SkyBoxMtrl", pMtrl);
 
+	// DecalMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"DecalShader"));
+	AddAsset(L"DecalMtrl", pMtrl);
 }

@@ -4,7 +4,6 @@
 #include "value.fx"
 #include "func.fx"
 
-
 struct VS_IN
 {
     float3 vPos : POSITION;
@@ -23,7 +22,6 @@ struct PS_OUT
     float4 vSpecular : SV_TARGET1;
 };
 
-
 // ================================
 // Directional Light Shader 
 // MRT  : LIGHT (Diffuse, Specular)
@@ -36,17 +34,15 @@ struct PS_OUT
 #define POS_TARGET      g_tex_0
 #define NORMAL_TARGET   g_tex_1
 // ================================
-
 VS_OUT VS_DirLight(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
         
     output.vPosition = float4(_in.vPos * 2.f, 1.f);
-    output.vUV = _in.vUV;
+    output.vUV = _in.vUV;    
     
     return output;
 }
-
 
 PS_OUT PS_DirLight(VS_OUT _in)
 {
@@ -56,7 +52,7 @@ PS_OUT PS_DirLight(VS_OUT _in)
     float4 vViewPos = POS_TARGET.Sample(g_sam_0, _in.vUV);
     
     // 광원이 부딪힐 물체가 존재하지 않는다.
-    if (0.f == vViewPos.w)
+    if(0.f == vViewPos.w)
         discard;
     
     float3 vViewNormal = NORMAL_TARGET.Sample(g_sam_0, _in.vUV).xyz;
@@ -75,23 +71,23 @@ PS_OUT PS_DirLight(VS_OUT _in)
 }
 
 // ================================
-// Point Light Shader 
+// Point Light Shader
 // MRT  : LIGHT (Diffuse, Specular)
 // Mesh : SphereMesh
-// Rasterizer   : CULL_BACK
+// Rasterizer   : CULL_FRONT, (CULL_NONE 하면 광원처리 2중첩 되는 문제가 있다)
 // DepthStencil : NO_TEST_NO_WRITE
 // BlendState   : ONE_ONE
 // Parameter
-#define LIGHT_IDX       g_int_0
-#define POS_TARGET      g_tex_0
-#define NORMAL_TARGET   g_tex_1
+//#define LIGHT_IDX       g_int_0
+//#define POS_TARGET      g_tex_0
+//#define NORMAL_TARGET   g_tex_1 
+// 뷰 역행렬
+// 월드 역행렬
 // ================================
-
-
 VS_OUT VS_PointLight(VS_IN _in)
 {
-    VS_OUT output = (VS_OUT) 0.f; 
-    
+    VS_OUT output = (VS_OUT) 0.f;
+        
     output.vPosition = mul(float4(_in.vPos, 1.f), matWVP);
     output.vUV = _in.vUV;
     
@@ -102,127 +98,42 @@ PS_OUT PS_PointLight(VS_OUT _in)
 {
     PS_OUT output = (PS_OUT) 0.f;
     
-    // 스크린 좌표 / 전체 해상도 = 전체 화면 기준으로 좌표가 해당하는 UV
-    float2 vRenderUV = _in.vPosition.xy / g_Resolution;
+    // 픽셀쉐이더랑 동일한 지점에서 Position 값을 확인한다.    
+    float2 vScreenUV = _in.vPosition.xy/*픽셀 좌표*/ / g_Resolution;
+    float4 vViewPos = POS_TARGET.Sample(g_sam_0, vScreenUV);
     
-    // SV_Position으로 스크린 좌표 획득하여 확인
-    float4 vViewPos = POS_TARGET.Sample(g_sam_0, vRenderUV);
-    
-    // 광원이 부딪힐 물체가 존재하지 않거나 Stencil 값이 0이다
+    // 광원이 부딪힐 물체가 존재하지 않는다.
     if (0.f == vViewPos.w)
+    {
         discard;
+    }
     
-    // Decal
-    // 해당 물체가 볼륨 메쉬 내부인지 판정
-    // 추출한 물체의 ViewPos를 WorldPos 로 변경한다.
+    // 해당 물체가 볼륨메쉬 내부인지 판정
+    // 추출한 물체의 ViewPos 를 WorldPos 로 변경한다.
     float3 vWorldPos = mul(float4(vViewPos.xyz, 1.f), matViewInv).xyz;
     
     // World 상에 있는 물체의 좌표를, Volume Mesh 의 월드 역행렬을 곱해서 Local 공간으로 데려간다.
     float3 vLocalPos = mul(float4(vWorldPos, 1.f), matWorldInv).xyz;
     
-    // 물체가 볼륨 메쉬 영역 밖이라면 광원 계산 중단
+    // 물체가 볼륨메쉬 영역 밖이라면 광원계산 중단
     if (0.5f < length(vLocalPos))
     {
         discard;
-    }  
+    }
     
-    float3 vViewNormal = NORMAL_TARGET.Sample(g_sam_0, vRenderUV).xyz;
-
+    float3 vViewNormal = NORMAL_TARGET.Sample(g_sam_0, vScreenUV).xyz;
+    
     // 해당 지점이 받을 빛의 세기를 계산한다.
     tLight light = (tLight) 0.f;
     CalculateLight3D(LIGHT_IDX, vViewNormal, vViewPos.xyz, light);
         
     output.vDiffuse = light.Color + light.Ambient;
-    output.vSpecular = light.SpecCoef;
-    
+    output.vSpecular = light.SpecCoef;    
     output.vDiffuse.a = 1.f;
-    output.vSpecular.a = 1.f;
-    
-    
+    output.vSpecular.a = 1.f;    
+   
     return output;
 }
-
-
-// ================================
-// Spot Light Shader 
-// MRT  : LIGHT (Diffuse, Specular)
-// Mesh : ConeMesh
-// Rasterizer   : CULL_BACK
-// DepthStencil : NO_TEST_NO_WRITE
-// BlendState   : ONE_ONE
-// Parameter
-#define ANGLE           g_float_0
-#define LIGHT_IDX       g_int_0
-#define POS_TARGET      g_tex_0
-#define NORMAL_TARGET   g_tex_1
-// ================================
-
-
-VS_OUT VS_SpotLight(VS_IN _in)
-{
-    VS_OUT output = (VS_OUT) 0.f;
-    
-    output.vPosition = mul(float4(_in.vPos, 1.f), matWVP);
-    output.vUV = _in.vUV;
-    
-    return output;
-}
-
-PS_OUT PS_SpotLight(VS_OUT _in)
-{
-    PS_OUT output = (PS_OUT) 0.f;
-    
-    // 스크린 좌표 / 전체 해상도 = 전체 화면 기준으로 좌표가 해당하는 UV
-    float2 vRenderUV = _in.vPosition.xy / g_Resolution;
-    
-    // SV_Position으로 스크린 좌표 획득하여 확인
-    float4 vViewPos = POS_TARGET.Sample(g_sam_0, vRenderUV);
-    
-    // 광원이 부딪힐 물체가 존재하지 않는다
-    if (0.f == vViewPos.w)
-        discard;
-    
-    // Decal
-    // 해당 물체가 볼륨 메쉬 내부인지 판정
-    // 추출한 물체의 ViewPos를 WorldPos 로 변경한다.
-    float3 vWorldPos = mul(float4(vViewPos.xyz, 1.f), matViewInv).xyz;
-    
-    // World 상에 있는 물체의 좌표를, Volume Mesh 의 월드 역행렬을 곱해서 Local 공간으로 데려간다.
-    float3 vLocalPos = mul(float4(vWorldPos, 1.f), matWorldInv).xyz;
-    
-    float dst_angle = dot(float3(0.f, 0.f, 1.f), normalize(vLocalPos));
-    
-    
-    // 물체와 원점 사이 길이가 모선내에 있는가 and 물체와 원점이 이루는 각도가 원뿔의 각도내에 있는가 
-    if (vLocalPos.z <= 1.f && vLocalPos.z >= 0.f && vLocalPos.x >= 0.f && vLocalPos.x <= 0.5f && vLocalPos.y >= 0.f && vLocalPos.y <= 0.5f  && dst_angle <= cos(ANGLE / 2.f))
-    {
-        float3 vViewNormal = NORMAL_TARGET.Sample(g_sam_0, vRenderUV).xyz;
-
-        // 해당 지점이 받을 빛의 세기를 계산한다.
-        tLight light = (tLight) 0.f;
-        CalculateLight3D(LIGHT_IDX, vViewNormal, vViewPos.xyz, light);
-        
-        output.vDiffuse = light.Color + light.Ambient;
-        output.vSpecular = light.SpecCoef;
-    
-        output.vDiffuse.a = 1.f;
-        output.vSpecular.a = 1.f;
-    }
-    
-    else
-    {
-        discard;
-    }
-    
-
-    
-    
-    return output;
-}
-
-
-
-
 
 
 

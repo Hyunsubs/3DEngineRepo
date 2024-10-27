@@ -34,7 +34,7 @@ void CMRT::Create(int _RTCount, Ptr<CTexture>* _arrRT, Ptr<CTexture> _DSTex)
 	// ViewPort ¼³Á¤
 	m_ViewPort.TopLeftX = 0;
 	m_ViewPort.TopLeftY = 0;
-	m_ViewPort.Width = pTarget->Width();
+	m_ViewPort.Width  = pTarget->Width();
 	m_ViewPort.Height = pTarget->Height();
 	m_ViewPort.MinDepth = 0.f;
 	m_ViewPort.MaxDepth = 1.f;

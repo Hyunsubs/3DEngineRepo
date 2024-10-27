@@ -94,6 +94,9 @@
     <ClInclude Include="CMeshRender.h">
       <Filter>08. Component\RenderComponent\01. MeshRender</Filter>
     </ClInclude>
+    <ClInclude Include="CRenderComponent.h">
+      <Filter>08. Component\RenderComponent</Filter>
+    </ClInclude>
     <ClInclude Include="components.h">
       <Filter>01. Header</Filter>
     </ClInclude>
@@ -161,13 +164,10 @@
       <Filter>08. Component\09. Light3D</Filter>
     </ClInclude>
     <ClInclude Include="CSkyBox.h">
-      <Filter>08. Component\10. SkyBox</Filter>
+      <Filter>08. Component\RenderComponent\05. SkyBox</Filter>
     </ClInclude>
     <ClInclude Include="CMRT.h">
       <Filter>04, Manager\06. RenderMgr\MRT</Filter>
-    </ClInclude>
-    <ClInclude Include="CRenderComponent.h">
-      <Filter>08. Component\RenderComponent</Filter>
     </ClInclude>
     <ClInclude Include="CDecal.h">
       <Filter>08. Component\RenderComponent\04. Decal</Filter>
@@ -243,6 +243,9 @@
     <ClCompile Include="CMeshRender.cpp">
       <Filter>08. Component\RenderComponent\01. MeshRender</Filter>
     </ClCompile>
+    <ClCompile Include="CRenderComponent.cpp">
+      <Filter>08. Component\RenderComponent</Filter>
+    </ClCompile>
     <ClCompile Include="CCamera.cpp">
       <Filter>08. Component\07. Camera</Filter>
     </ClCompile>
@@ -264,7 +267,6 @@
     <ClCompile Include="CAssetInit.cpp">
       <Filter>04, Manager\05. AssetMgr</Filter>
     </ClCompile>
-    <ClCompile Include="func.cpp" />
     <ClCompile Include="CCollider2D.cpp">
       <Filter>08. Component\02. Collider2D</Filter>
     </ClCompile>
@@ -311,19 +313,19 @@
       <Filter>08. Component\09. Light3D</Filter>
     </ClCompile>
     <ClCompile Include="CSkyBox.cpp">
-      <Filter>08. Component\10. SkyBox</Filter>
-    </ClCompile>
-    <ClCompile Include="CRenderMgr_Init.cpp">
-      <Filter>04, Manager\06. RenderMgr</Filter>
+      <Filter>08. Component\RenderComponent\05. SkyBox</Filter>
     </ClCompile>
     <ClCompile Include="CMRT.cpp">
       <Filter>04, Manager\06. RenderMgr\MRT</Filter>
     </ClCompile>
-    <ClCompile Include="CRenderComponent.cpp">
-      <Filter>08. Component\RenderComponent</Filter>
+    <ClCompile Include="CRenderMgr_Init.cpp">
+      <Filter>04, Manager\06. RenderMgr</Filter>
     </ClCompile>
     <ClCompile Include="CDecal.cpp">
       <Filter>08. Component\RenderComponent\04. Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="func.cpp">
+      <Filter>01. Header</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -501,11 +503,8 @@
     <Filter Include="08. Component\09. Light3D">
       <UniqueIdentifier>{c14eb9f4-762d-4132-84a3-20309c01a671}</UniqueIdentifier>
     </Filter>
-    <Filter Include="08. Component\10. SkyBox">
-      <UniqueIdentifier>{80fcda5c-1c91-4639-901f-c5260e8bbffe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04, Manager\06. RenderMgr\MRT">
-      <UniqueIdentifier>{58a37e86-f620-4403-a9e0-3776a9803cd7}</UniqueIdentifier>
+      <UniqueIdentifier>{e16c0fb4-864b-432e-9d53-85368b008497}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -557,6 +556,9 @@
       <Filter>HLSL\02. Render\02. 3D</Filter>
     </FxCompile>
     <FxCompile Include="merge.fx">
+      <Filter>HLSL\02. Render\02. 3D</Filter>
+    </FxCompile>
+    <FxCompile Include="decal.fx">
       <Filter>HLSL\02. Render\02. 3D</Filter>
     </FxCompile>
   </ItemGroup>

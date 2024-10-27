@@ -34,7 +34,7 @@ void CTransform::FinalTick()
 		          * XMMatrixRotationZ(m_RelativeRotation.z);
 
 	m_matWorld = matScale * matRot * matTranslation;
-	m_matWorldInv = XMMatrixInverse(NULL, m_matWorld);
+
 
 	// 방향벡터 계산
 	static Vec3 vDefaultAxis[3] =
@@ -85,12 +85,16 @@ void CTransform::FinalTick()
 			m_WorldDir[i] = m_RelativeDir[i];			
 		}
 	}
+
+	// 월드 역행렬 계산
+	m_matWorldInv = XMMatrixInverse(nullptr, m_matWorld);
 }
 
 void CTransform::Binding()
 {
-	g_Trans.matWorld = m_matWorld;
+	g_Trans.matWorld = m_matWorld;	
 	g_Trans.matWorldInv = m_matWorldInv;
+
 	g_Trans.matWV = g_Trans.matWorld * g_Trans.matView;
 	g_Trans.matWVP  = g_Trans.matWV * g_Trans.matProj;	
 

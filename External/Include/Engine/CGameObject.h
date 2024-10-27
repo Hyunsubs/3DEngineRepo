@@ -53,7 +53,8 @@ public:
     GET_COMPONENT(Light3D, LIGHT3D);
     GET_COMPONENT(ParticleSystem, PARTICLESYSTEM);
     GET_COMPONENT(SkyBox, SKYBOX);
-    GET_COMPONENT(Decal, DECAL);
+    GET_COMPONENT(Decal , DECAL);
+
 
 public:
     void Begin();

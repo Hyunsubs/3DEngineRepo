@@ -43,7 +43,7 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->Create(1, arrRT, pDSTex);
 		m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->SetClearColor(arrClearColor, false);
 	}
-
+	
 	// =============
 	// Effect MRT
 	// =============
@@ -126,7 +126,7 @@ void CRenderMgr::CreateMRT()
 			CAssetMgr::GetInst()->CreateTexture(L"SpecularTargetTex"
 											, (UINT)vResolution.x, (UINT)vResolution.y
 											, DXGI_FORMAT_R32G32B32A32_FLOAT
-											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),
+											, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE),			
 		};
 		Ptr<CTexture> pDSTex = nullptr;
 		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
@@ -136,6 +136,29 @@ void CRenderMgr::CreateMRT()
 		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->Create(2, arrRT, pDSTex);
 		m_arrMRT[(UINT)MRT_TYPE::LIGHT]->SetClearColor(arrClearColor, false);
 	}
+
+
+	// =====
+	// DECAL
+	// =====
+	{
+		Vec2 vResolution = CDevice::GetInst()->GetResolution();
+
+		Ptr<CTexture> arrRT[8] =
+		{
+			CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex"),
+			CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"),
+		};
+
+		Ptr<CTexture> pDSTex = nullptr;
+		Vec4		  arrClearColor[8] = { Vec4(0.f, 0.f, 0.f, 0.f), };
+
+		m_arrMRT[(UINT)MRT_TYPE::DECAL] = new CMRT;
+		m_arrMRT[(UINT)MRT_TYPE::DECAL]->SetName(L"Decal");
+		m_arrMRT[(UINT)MRT_TYPE::DECAL]->Create(2, arrRT, pDSTex);
+		m_arrMRT[(UINT)MRT_TYPE::DECAL]->SetClearColor(arrClearColor, false);
+	}
+
 }
 
 void CRenderMgr::ClearMRT()
@@ -164,6 +187,7 @@ void CRenderMgr::CreateMaterial()
 	pMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
 	CAssetMgr::GetInst()->AddAsset(L"DirLightMtrl", pMtrl);
 
+
 	// PointLightShader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\light.fx", "VS_PointLight");
@@ -181,27 +205,9 @@ void CRenderMgr::CreateMaterial()
 	pMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
 	CAssetMgr::GetInst()->AddAsset(L"PointLightMtrl", pMtrl);
 
-	// SpotLightShader
-	pShader = new CGraphicShader;
-	pShader->CreateVertexShader(L"shader\\light.fx", "VS_SpotLight");
-	pShader->CreatePixelShader(L"shader\\light.fx", "PS_SpotLight");
-	pShader->SetRSType(RS_TYPE::CULL_FRONT);
-	pShader->SetBSType(BS_TYPE::ONE_ONE);
-	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
-	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_LIGHT);
-	CAssetMgr::GetInst()->AddAsset(L"SpotLightShader", pShader);
-
-	// SpotLightMtrl
-	pMtrl = new CMaterial(true);
-	pMtrl->SetShader(pShader);
-	pMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
-	pMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex"));
-	CAssetMgr::GetInst()->AddAsset(L"SpotLightMtrl", pMtrl);
-
-
 
 	// MergeShader
-	pShader = new CGraphicShader;
+    pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\merge.fx", "VS_Merge");
 	pShader->CreatePixelShader(L"shader\\merge.fx", "PS_Merge");
 	pShader->SetRSType(RS_TYPE::CULL_BACK);
@@ -215,8 +221,12 @@ void CRenderMgr::CreateMaterial()
 	m_MergeMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_1, CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex"));
 	m_MergeMtrl->SetTexParam(TEX_2, CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex"));
-	
+	m_MergeMtrl->SetTexParam(TEX_3, CAssetMgr::GetInst()->FindAsset<CTexture>(L"EmissiveTargetTex"));
 
 	// RectMesh
 	m_RectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
+
+	// DecalMtrl
+	Ptr<CMaterial> pDeaclMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DecalMtrl");
+	pDeaclMtrl->SetTexParam(TEX_0, CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex"));
 }

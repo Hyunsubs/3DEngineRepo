@@ -27,11 +27,11 @@ void CTestLevel::CreateTestLevel()
 	Ptr<CMaterial> pStd3DMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3DMtrl");
 	Ptr<CMaterial> pStd3D_DeferredMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl");
 
-
+	
 
 	// Level »ý¼º
 	CLevel* pLevel = new CLevel;
-
+	
 	pLevel->GetLayer(0)->SetName(L"Default");
 	pLevel->GetLayer(1)->SetName(L"Background");
 	pLevel->GetLayer(2)->SetName(L"Tile");
@@ -94,7 +94,7 @@ void CTestLevel::CreateTestLevel()
 
 	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
 	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
+	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);		
 
 	pLevel->AddObject(0, pSkyBox);
 
@@ -102,8 +102,8 @@ void CTestLevel::CreateTestLevel()
 	CGameObject* pPlane = new CGameObject;
 	pPlane->SetName(L"Plane");
 	pPlane->AddComponent(new CTransform);
-	pPlane->AddComponent(new CMeshRender);
-
+	pPlane->AddComponent(new CMeshRender);		
+	
 	pPlane->Transform()->SetRelativePos(0.f, -500.f, 0.f);
 	pPlane->Transform()->SetRelativeScale(4000.f, 4000.f, 1.f);
 	pPlane->Transform()->SetRelativeRotation(XM_PI / 2.f, 0.f, 0.f);
@@ -144,6 +144,8 @@ void CTestLevel::CreateTestLevel()
 
 	pDecal->Transform()->SetRelativePos(0.f, 0.f, 1000.f);
 	pDecal->Transform()->SetRelativeScale(100.f, 100.f, 100.f);
+
+	pDecal->Decal()->SetDecalTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\MagicCircle.png"));
 
 	pLevel->AddObject(3, pDecal);
 

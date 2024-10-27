@@ -12,7 +12,7 @@ private:
     Vec3    m_WorldDir[3];
 
     Matrix  m_matWorld;         // 이동, 크기, 회전
-    Matrix  m_matWorldInv;
+    Matrix  m_matWorldInv;      // 월드행렬 역행렬
     bool    m_IndependentScale; // 부모의 크기에 영향받지 않음
 
 public:
@@ -39,7 +39,7 @@ public:
     Vec3 GetRelativeScale() { return m_RelativeScale; }
     Vec3 GetWorldScale();
 
-    Vec3 GetRelativeRotation() { return m_RelativeRotation; }
+    Vec3 GetRelativeRoatation() { return m_RelativeRotation; }
     Vec3 GetRelativeDir(DIR _Type) { return m_RelativeDir[_Type]; }
     Vec3 GetWorldDir(DIR _Type) { return m_WorldDir[_Type]; }
 

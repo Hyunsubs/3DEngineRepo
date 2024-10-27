@@ -75,8 +75,8 @@ void CRenderMgr::Tick()
 	{
 		if (nullptr != m_EditorCamera)
 		{
-			Render(m_EditorCamera);
-		}
+			Render(m_EditorCamera);			
+		}		
 	}
 
 	// Debug Render
@@ -116,7 +116,7 @@ CCamera* CRenderMgr::GetPOVCam()
 	if (LEVEL_STATE::PLAY == pCurLevel->GetState())
 	{
 		if (m_vecCam.empty())
-			return nullptr;
+			return nullptr; 
 
 		return m_vecCam[0];
 	}
@@ -134,12 +134,12 @@ void CRenderMgr::RenderStart()
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->ClearRT();
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->ClearDS();
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-
+	
 	// GlobalData 설정
 	g_GlobalData.g_Resolution = CDevice::GetInst()->GetResolution();
 	g_GlobalData.g_Light2DCount = (int)m_vecLight2D.size();
 	g_GlobalData.g_Light3DCount = (int)m_vecLight3D.size();
-
+		
 	// Light2D 정보 업데이트 및 바인딩
 	vector<tLightInfo> vecLight2DInfo;
 	for (size_t i = 0; i < m_vecLight2D.size(); ++i)
@@ -186,7 +186,7 @@ void CRenderMgr::RenderStart()
 		pCam = m_vecCam[0];
 	else
 		pCam = m_EditorCamera;
-
+	
 	if (pCam == nullptr)
 		g_GlobalData.g_CamWorldPos = Vec3(0.f, 0.f, 0.f);
 	else
@@ -222,11 +222,17 @@ void CRenderMgr::Render(CCamera* _Cam)
 	_Cam->render_deferred();
 
 	// ===============
+	// DECAL RENDERING
+	// ===============
+	m_arrMRT[(UINT)MRT_TYPE::DECAL]->OMSet();
+	_Cam->render_decal();
+
+
+	// ===============
 	// LIGHT RENDERING
 	// ===============
-
 	m_arrMRT[(UINT)MRT_TYPE::LIGHT]->OMSet();
-
+	
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
 		m_vecLight3D[i]->Render();
@@ -251,6 +257,7 @@ void CRenderMgr::Render(CCamera* _Cam)
 	_Cam->render_particle();
 	_Cam->render_postprocess();
 	_Cam->render_ui();
+	
 
 	// 정리
 	_Cam->clear();
@@ -269,7 +276,7 @@ void CRenderMgr::Clear()
 void CRenderMgr::RenderDebugShape()
 {
 	list<tDebugShapeInfo>::iterator iter = m_DebugShapeList.begin();
-
+	
 	Ptr<CGraphicShader> pDebugShape = CAssetMgr::GetInst()->FindAsset<CGraphicShader>(L"DebugShapeShader");
 	Ptr<CGraphicShader> pDebugLine = CAssetMgr::GetInst()->FindAsset<CGraphicShader>(L"DebugLineShader");
 
@@ -280,12 +287,11 @@ void CRenderMgr::RenderDebugShape()
 		m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetRSType(RS_TYPE::CULL_NONE);
 		m_DebugObject->MeshRender()->GetMaterial()->SetShader(pDebugShape);
 
-
 		// 디버그 요청 모양에 맞는 메시를 가져옴
 		switch ((*iter).Shape)
 		{
 		case DEBUG_SHAPE::RECT:
-			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));
+			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh_Debug"));			
 			break;
 		case DEBUG_SHAPE::CIRCLE:
 			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"CircleMesh_Debug"));
@@ -302,14 +308,9 @@ void CRenderMgr::RenderDebugShape()
 			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"SphereMesh"));
 			m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetRSType(RS_TYPE::CULL_FRONT);
-			break;
-		case DEBUG_SHAPE::CONE:
-			m_DebugObject->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"ConeMesh"));
-			m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			m_DebugObject->MeshRender()->GetMaterial()->GetShader()->SetRSType(RS_TYPE::CULL_FRONT);
-			break;
+			break;		
 		}
-
+		
 		// 위치 세팅
 		m_DebugObject->Transform()->SetWorldMatrix((*iter).matWorld);
 

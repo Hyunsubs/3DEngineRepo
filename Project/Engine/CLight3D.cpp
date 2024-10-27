@@ -15,11 +15,11 @@ CLight3D::CLight3D()
 }
 
 CLight3D::CLight3D(const CLight3D& _Origin)
-	: CComponent(COMPONENT_TYPE::LIGHT3D)
+	: CComponent(_Origin)
 	, m_Info(_Origin.m_Info)
-	, m_LightIdx(-1)
+	, m_LightIdx(-1)	
 {
-	SetLightType(m_Info.Type);
+	SetLightType(m_Info.Type);	
 }
 
 CLight3D::~CLight3D()
@@ -49,47 +49,38 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 	}
 }
 
+
 void CLight3D::FinalTick()
 {
 	m_Info.WorldPos = Transform()->GetWorldPos();
 	m_Info.WorldDir = Transform()->GetWorldDir(DIR::FRONT);
 
+	// PointLight, SphereMesh, r = 0.5f
+	Transform()->SetRelativeScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, m_Info.Radius * 2.f);
+
 	// 자신을 RenderMgr 에 등록시킴
 	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
 
-
-	// Debug Shape
-	if (m_Info.Type == LIGHT_TYPE::SPOT)
-	{
-		DrawDebugCone(Transform()->GetWorldMat(), Vec4(0.f, 1.f, 0.f, 1.f), 0.f, true);
-		Transform()->SetRelativeScale(m_Info.Radius * 2.f * m_Info.Angle / 2.f, m_Info.Radius * 2.f * m_Info.Angle / 2.f, m_Info.Radius);
-	}
-	 
-	// Debug Shape
+	// DebugShape
 	if (m_Info.Type == LIGHT_TYPE::POINT)
 	{
 		DrawDebugSphere(Transform()->GetWorldMat(), Vec4(0.f, 1.f, 0.f, 1.f), 0.f, true);
-		Transform()->SetRelativeScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, m_Info.Radius * 2.f);
 	}
-}
-
-
-void CLight3D::SetRadius(float _Radius)
-{
-	m_Info.Radius = _Radius;
-
 }
 
 void CLight3D::Render()
 {
 	Transform()->Binding();
 
-	if (m_Info.Type == LIGHT_TYPE::SPOT)
-		m_LightMtrl->SetScalarParam(FLOAT_0, m_Info.Angle);
 	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx);
 	m_LightMtrl->Binding();
 
 	m_VolumeMesh->Render();
+}
+
+void CLight3D::SetRadius(float _Radius)
+{
+	m_Info.Radius = _Radius;	
 }
 
 void CLight3D::SaveToFile(FILE* _File)

@@ -26,11 +26,12 @@ private:
     float                   m_ProjectionScale; 
 
     Matrix                  m_matView;
-    Matrix                  m_matProj;
     Matrix                  m_matViewInv;
+    Matrix                  m_matProj;
     Matrix                  m_matProjInv;
 
     vector<CGameObject*>    m_vecDeferred;      // Deferred
+    vector<CGameObject*>    m_vecDecal;         // Decal
     vector<CGameObject*>    m_vecOpaque;        // 불투명
     vector<CGameObject*>    m_vecMasked;        // 불투명, 투명
     vector<CGameObject*>    m_vecTransparent;   // 투명, 반투명
@@ -83,28 +84,24 @@ public:
     float GetScale() { return m_ProjectionScale; }
 
     const Matrix& GetViewMat() { return m_matView; }
-    const Matrix& GetProjMat() { return m_matProj; }
     const Matrix& GetViewMatInv() { return m_matViewInv; }
+    const Matrix& GetProjMat() { return m_matProj; }
     const Matrix& GetProjMatInv() { return m_matProjInv; }
-
 
 private:
     void SortGameObject();
 
     void render_deferred();
-
+    void render_decal();
     void render_opaque();
     void render_masked();
     void render_effect();
     void render_transparent();
-    void render_particle();
+    void render_particle();        
     void render_postprocess();
     void render_ui();
 
     void clear();
-
-public:   
-    void Render();
 
 public:
     virtual void Begin() override;
@@ -113,7 +110,7 @@ public:
     virtual void LoadFromFile(FILE* _File) override;
 
 public:
-    CLONE(CCamera)
+    CLONE(CCamera);
     CCamera();
     ~CCamera();
 

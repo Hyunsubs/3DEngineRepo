@@ -22,7 +22,7 @@ CCamera::CCamera()
 	, m_Width(0)
 	, m_Height(0)
 	, m_Far(100000.f)
-	, m_FOV(XM_PI / 2.f)
+	, m_FOV( XM_PI / 2.f)
 	, m_ProjectionScale(1.f)
 {
 	Vec2 vResolution = CDevice::GetInst()->GetResolution();
@@ -54,7 +54,6 @@ void CCamera::FinalTick()
 	// 2. 카메라가 월드에서 바라보던 방향을 Z 축으로 돌려두어야 한다.
 	//    물체들도 같이 회전을 한다.
 
-
 	// View 행렬을 계산한다.
 	// View 행렬은 World Space -> View Space 로 변경할때 사용하는 행렬		
 	Matrix matTrans = XMMatrixTranslation(-Transform()->GetRelativePos().x, -Transform()->GetRelativePos().y, -Transform()->GetRelativePos().z);
@@ -69,7 +68,7 @@ void CCamera::FinalTick()
 	matRot._31 = vR.z; matRot._32 = vU.z; matRot._33 = vF.z;
 
 	m_matView = matTrans * matRot;
-	m_matViewInv = XMMatrixInverse(NULL, m_matView);
+
 
 	// Projection Space 투영 좌표계 (NDC)
 	if (PROJ_TYPE::ORTHOGRAPHIC == m_ProjType)
@@ -86,7 +85,9 @@ void CCamera::FinalTick()
 		m_matProj = XMMatrixPerspectiveFovLH(m_FOV, m_AspectRatio, 1.f, m_Far);
 	}
 
-	m_matProjInv = XMMatrixInverse(NULL, m_matProj);
+	// 역행렬 계산
+	m_matViewInv = XMMatrixInverse(nullptr, m_matView);
+	m_matProjInv = XMMatrixInverse(nullptr, m_matProj);
 }
 
 
@@ -106,7 +107,7 @@ void CCamera::SortGameObject()
 		const vector<CGameObject*>& vecObjects = pLayer->GetObjects();
 		for (size_t j = 0; j < vecObjects.size(); ++j)
 		{
-			if (nullptr == vecObjects[j]->GetRenderComponent()
+			if ( nullptr == vecObjects[j]->GetRenderComponent()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMesh()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()->GetShader())
@@ -119,8 +120,11 @@ void CCamera::SortGameObject()
 
 			switch (Domain)
 			{
-			case DOMAIN_DEFERRED:
+			case DOMAIN_DEFERRED:				
 				m_vecDeferred.push_back(vecObjects[j]);
+				break;
+			case DOMAIN_DECAL:
+				m_vecDecal.push_back(vecObjects[j]);
 				break;
 			case DOMAIN_OPAQUE:
 				m_vecOpaque.push_back(vecObjects[j]);
@@ -157,6 +161,15 @@ void CCamera::render_deferred()
 	}
 }
 
+void CCamera::render_decal()
+{
+	// Decal
+	for (size_t i = 0; i < m_vecDecal.size(); ++i)
+	{
+		m_vecDecal[i]->Render();
+	}
+}
+
 void CCamera::render_opaque()
 {
 	// Opaque
@@ -188,7 +201,7 @@ void CCamera::render_transparent()
 void CCamera::render_effect()
 {
 	// EffectMRT 로 변경
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->Clear();
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->Clear();	
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->OMSet();
 
 	// Effect
@@ -200,7 +213,7 @@ void CCamera::render_effect()
 	// EffectBlurMRT 로 변경
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->ClearRT();
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->OMSet();
-
+		
 	Ptr<CMaterial> pBlurMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"BlurMtrl");
 	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 
@@ -250,6 +263,7 @@ void CCamera::render_ui()
 void CCamera::clear()
 {
 	m_vecDeferred.clear();
+	m_vecDecal.clear();
 	m_vecOpaque.clear();
 	m_vecMasked.clear();
 	m_vecTransparent.clear();

@@ -31,7 +31,7 @@ public:
 public:
     UINT Width() { return m_Desc.Width; }
     UINT Height() { return m_Desc.Height; }
-    
+    bool IsCubeMap() { return m_Desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE; }
 
 public:
     // _Flags : D3D11_BIND_FLAG
@@ -49,8 +49,7 @@ public:
     // ComputeShader - u register
     void Binding_CS_UAV(UINT _RegisterNum);
     void Clear_CS_UAV();
-    bool IsCubeMap() { return m_Desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE; }
-
+    
 
     virtual int Load(const wstring& _FilePath) override;
     virtual int Save(const wstring& _FilePath) override;

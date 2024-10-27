@@ -21,7 +21,7 @@ void TransformUI::Update()
 
 	Vec3 vPos = pTrans->GetRelativePos();
 	Vec3 vScale = pTrans->GetRelativeScale();
-	Vec3 vRot = pTrans->GetRelativeRotation();
+	Vec3 vRot = pTrans->GetRelativeRoatation();
 	vRot = (vRot / XM_PI) * 180.f;
 
 

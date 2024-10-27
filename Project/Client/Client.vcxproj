@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)OutputFile\bin\</OutDir>
     <TargetName>$(ProjectName)_D</TargetName>
-    <IncludePath>$(SolutionDir)External\Include\;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\External\Include\;$(ProjectDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Library\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,7 +160,6 @@
     <ClInclude Include="FlipBookUI.h" />
     <ClInclude Include="GraphicShaderUI.h" />
     <ClInclude Include="Light2DUI.h" />
-    <ClInclude Include="Light3DUI.h" />
     <ClInclude Include="ListUI.h" />
     <ClInclude Include="MaterialUI.h" />
     <ClInclude Include="MenuUI.h" />
@@ -215,7 +214,6 @@
     <ClCompile Include="GraphicShaderUI.cpp" />
     <ClCompile Include="Inspector_Init.cpp" />
     <ClCompile Include="Light2DUI.cpp" />
-    <ClCompile Include="Light3DUI.cpp" />
     <ClCompile Include="ListUI.cpp" />
     <ClCompile Include="MaterialUI.cpp" />
     <ClCompile Include="MenuUI.cpp" />

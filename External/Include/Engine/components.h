@@ -9,7 +9,6 @@
 //#include "CCollider3D.h"
 //#include "CAnimator3D.h"
 //#include "CRigidBody.h"
-
 //#include "CStateMachine.h"
 
 #include "CMeshRender.h"

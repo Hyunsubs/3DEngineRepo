@@ -243,13 +243,13 @@ CComponent* CLevelSaveLoad::GetComponent(COMPONENT_TYPE _Type)
 		return  new CTileMap;
 
 	case COMPONENT_TYPE::PARTICLESYSTEM:
-		break;
+		return new CParticleSystem;
 
 	case COMPONENT_TYPE::DECAL:
-			return new CDecal;
+		return new CDecal;
 
 	case COMPONENT_TYPE::SKYBOX:
-		break;
+		return new CSkyBox;
 
 	case COMPONENT_TYPE::LANDSCAPE:
 		break;

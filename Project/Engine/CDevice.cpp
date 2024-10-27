@@ -307,6 +307,8 @@ int CDevice::CreateDepthStencilState()
         return E_FAIL;
     }
 
+
+
     //// INNER - VolumeMesh 뒷변보다 앞쪽에 있는 부분 체크
     //Desc.DepthEnable = true;    // 깊이판정을 진행
     //Desc.DepthFunc = D3D11_COMPARISON_GREATER;           // 깊이 판정 방식
@@ -324,7 +326,7 @@ int CDevice::CreateDepthStencilState()
     //Desc.FrontFace.StencilDepthFailOp;
     //Desc.FrontFace.StencilDepthFailOp;
 
-    //if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::INNER].GetAddressOf())))
+    //if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::NO_TEST_NO_WRITE].GetAddressOf())))
     //{
     //    return E_FAIL;
     //}
@@ -346,35 +348,34 @@ int CDevice::CreateDepthStencilState()
     //Desc.BackFace.StencilDepthFailOp;
     //Desc.BackFace.StencilDepthFailOp;  
 
-    //if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::OUTER].GetAddressOf())))
+    //if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::NO_TEST_NO_WRITE].GetAddressOf())))
     //{
     //    return E_FAIL;
     //}
 
 
-    // VOLUME_CHECK
-    Desc.DepthEnable    = true;    // 깊이판정을 진행
-    Desc.DepthFunc      = D3D11_COMPARISON_GREATER;           // 깊이 판정 방식
-    Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;   // 깊이판정을 성공시 깊이 기록여부
-    Desc.StencilEnable  = true;
+    //// VOLUME_CHECK
+    //Desc.DepthEnable    = true;    // 깊이판정을 진행
+    //Desc.DepthFunc      = D3D11_COMPARISON_GREATER;           // 깊이 판정 방식
+    //Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;   // 깊이판정을 성공시 깊이 기록여부
+    //Desc.StencilEnable  = true;
 
-    // Stencil Enable Test Param
-    Desc.StencilReadMask = 1;
+    //Desc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;  // 항상 통과    
+    //Desc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;    // 스텐실 테스트는 항상 통과기 때문에 발생할 일이 없다.
+    //Desc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_DECR;    // 깊이가 실패(뒷면보다 더 멀다)
+    //Desc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_INCR;    // 스텐실 값을 증가시킨다.
 
-    Desc.BackFace.StencilFunc           = D3D11_COMPARISON_ALWAYS;  // 항상 통과    
-    Desc.BackFace.StencilFailOp         = D3D11_STENCIL_OP_KEEP;    // 스텐실 테스트는 항상 통과기 때문에 발생할 일이 없다.
-    Desc.BackFace.StencilDepthFailOp    = D3D11_STENCIL_OP_DECR;    // 깊이가 실패(뒷면보다 더 멀다)
-    Desc.BackFace.StencilPassOp         = D3D11_STENCIL_OP_INCR;    // 스텐실 값을 증가시킨다.
+    //Desc.FrontFace.StencilFunc          = D3D11_COMPARISON_ALWAYS; // 특정값(1) 이랑 동일할 경우 Stencil 통과
+    //Desc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;  // 스텐실 실패 == Inner 체크 성공을 못한 부분들, 아무것도 할 필요가 없다.
+    //Desc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_INCR;  // 스텐실 성공, 깊이 실패, 뒷면보다는 안쪽에 있었지만 앞면보다도 더 앞쪽에 있었다    
+    //Desc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_DECR;  // 스텐실 성공, 깊이 성공, 뒷면보다 안쪽에, 앞면보다 뒷쪽에, 볼륨메쉬 내부영역
 
-    Desc.FrontFace.StencilFunc          = D3D11_COMPARISON_EQUAL; // 특정값(1) 이랑 동일할 경우 Stencil 통과
-    Desc.FrontFace.StencilFailOp        = D3D11_STENCIL_OP_KEEP;  // 스텐실 실패 == Inner 체크 성공을 못한 부분들, 아무것도 할 필요가 없다.
-    Desc.FrontFace.StencilDepthFailOp   = D3D11_STENCIL_OP_INCR;  // 스텐실 성공, 깊이 실패, 뒷면보다는 안쪽에 있었지만 앞면보다도 더 앞쪽에 있었다    
-    Desc.FrontFace.StencilPassOp        = D3D11_STENCIL_OP_DECR;  // 스텐실 성공, 깊이 성공, 뒷면보다 안쪽에, 앞면보다 뒷쪽에, 볼륨메쉬 내부영역
+    //if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::NO_TEST_NO_WRITE].GetAddressOf())))
+    //{
+    //    return E_FAIL;
+    //}
 
-    if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::VOLUME_CHECK].GetAddressOf())))
-    {
-        return E_FAIL;
-    }
+
 
 
 
@@ -454,6 +455,41 @@ int CDevice::CreateBlendState()
     {
         return E_FAIL;
     }
+
+
+    // Decal BlendState
+    Desc.AlphaToCoverageEnable = false;
+    Desc.IndependentBlendEnable = true;
+
+    Desc.RenderTarget[0].BlendEnable = true;
+    Desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+   
+    Desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; // 계수
+    Desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // 계수
+
+    Desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+
+    Desc.RenderTarget[1].BlendEnable = true;
+    Desc.RenderTarget[1].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    Desc.RenderTarget[1].BlendOp = D3D11_BLEND_OP_ADD;
+    Desc.RenderTarget[1].SrcBlend = D3D11_BLEND_ONE;
+    Desc.RenderTarget[1].DestBlend = D3D11_BLEND_ONE; 
+
+    Desc.RenderTarget[1].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    Desc.RenderTarget[1].SrcBlendAlpha = D3D11_BLEND_ONE;
+    Desc.RenderTarget[1].DestBlendAlpha = D3D11_BLEND_ZERO;
+
+    if (FAILED(DEVICE->CreateBlendState(&Desc, m_BSState[(UINT)BS_TYPE::DECAL].GetAddressOf())))
+    {
+        return E_FAIL;
+    }
+
+
+
 
     return S_OK;
 }

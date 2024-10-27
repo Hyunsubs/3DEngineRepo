@@ -85,10 +85,9 @@ enum class DS_TYPE
 	NO_WRITE,
 	NO_TEST_NO_WRITE,
 
-	// 스텐실 방식의 POINT, SPOT 광원 처리
 	INNER,
 	OUTER,
-	VOLUME_CHECK,
+
 
 	END,
 };
@@ -99,6 +98,7 @@ enum class BS_TYPE
 	ALPHABLEND_COVERAGE,
 	ALPHABLEND,
 	ONE_ONE,
+	DECAL,
 	END,
 };
 
@@ -137,6 +137,7 @@ enum SHADER_DOMAIN
 	DOMAIN_DEFERRED,	// Deferred 
 	DOMAIN_LIGHT,		// Light
 	DOMAIN_DECAL,		// Decal
+
 	DOMAIN_OPAQUE,		// 불투명
 	DOMAIN_MASKED,		// 투명, 불투명
 	DOMAIN_TRANSPARENT, // 반투명
@@ -155,7 +156,6 @@ enum class DEBUG_SHAPE
 	LINE,
 	CUBE,
 	SPHERE,
-	CONE,
 };
 
 enum TASK_TYPE
@@ -216,10 +216,11 @@ enum class MRT_TYPE
 	SWAPCHAIN,
 	EFFECT,
 	EFFECT_BLUR,
-	
-	DEFERRED, 
-	LIGHT,
-	SHADOWMAP,
+
+	DEFERRED,	// 5개
+	LIGHT,		// 2개
+	DECAL,		// 2개
+	SHADOWMAP,  // 1개
 
 	END,
 };

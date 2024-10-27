@@ -49,11 +49,11 @@ VS_OUT VS_Std3D_Deferred(VS_IN _in)
 
 struct PS_OUT
 {
-    float4 vAlbedo : SV_Target0;
-    float4 vNormal : SV_Target1;
-    float4 vPosition : SV_Target2;
-    float4 vEmissive : SV_Target3;
-    float4 vData : SV_Target4;
+    float4 vAlbedo      : SV_Target0;
+    float4 vNormal      : SV_Target1;
+    float4 vPosition    : SV_Target2;
+    float4 vEmissive    : SV_Target3;
+    float4 vData        : SV_Target4;
 };
 
 
@@ -61,11 +61,12 @@ PS_OUT PS_Std3D_Deferred(VS_OUT _in)
 {
     PS_OUT output = (PS_OUT) 0.f;
         
-    output.vAlbedo = float4(1.f, 0.f, 1.f, 1.f);
-    output.vNormal = float4(_in.vViewNormal, 1.f);
+    output.vAlbedo   = float4(1.f, 0.f, 1.f, 1.f);
+    output.vNormal   = float4(_in.vViewNormal, 1.f);
     output.vPosition = float4(_in.vViewPos, 1.f);
     output.vEmissive = float4(0.f, 0.f, 0.f, 0.f);
-    output.vData = float4(0.f, 0.f, 0.f, 0.f);
+    output.vData     = float4(0.f, 0.f, 0.f, 0.f);
+   
     
     if (g_btex_0)
         output.vAlbedo = g_tex_0.Sample(g_sam_0, _in.vUV);

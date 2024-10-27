@@ -7,13 +7,12 @@ enum SKYBOX_TYPE
     CUBE,
 };
 
-
 class CSkyBox :
     public CRenderComponent
 {
 private:
-    SKYBOX_TYPE m_Type;
-    Ptr<CTexture> m_SkyBoxTex;
+    SKYBOX_TYPE     m_Type;
+    Ptr<CTexture>   m_SkyBoxTex;
 
 public:
     void SetSkyBoxType(SKYBOX_TYPE _Type);
@@ -25,10 +24,8 @@ public:
 
     virtual void SaveToFile(FILE* _File) override;   // 파일에 컴포넌트의 정보를 저장
     virtual void LoadFromFile(FILE* _File) override; // 파일에 컴포넌트의 정보를 로드
-    
-
+    CLONE(CSkyBox);
 public:
-    CLONE(CSkyBox)
     CSkyBox();
     CSkyBox(const CSkyBox& _Origin);
     ~CSkyBox();

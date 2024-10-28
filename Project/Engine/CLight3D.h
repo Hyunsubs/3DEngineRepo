@@ -11,6 +11,8 @@ private:
     Ptr<CMesh>      m_VolumeMesh;
     Ptr<CMaterial>  m_LightMtrl;
 
+    // 광원 시점에서 찍은 주변 사물의 깊이
+    Ptr<CTexture>   m_ShadowMapTex;
 
 public:
     void SetLightType(LIGHT_TYPE _Type);

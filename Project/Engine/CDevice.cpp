@@ -469,8 +469,8 @@ int CDevice::CreateBlendState()
     Desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // °è¼ö
 
     Desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
-    Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-    Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ZERO;
+    Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
 
     Desc.RenderTarget[1].BlendEnable = true;
     Desc.RenderTarget[1].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;

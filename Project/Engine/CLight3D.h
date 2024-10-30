@@ -14,6 +14,8 @@ private:
     // 광원 시점에서 찍은 주변 사물의 깊이
     Ptr<CTexture>   m_ShadowMapTex;
 
+    CGameObject*    m_Cam;
+
 public:
     void SetLightType(LIGHT_TYPE _Type);
     void SetRadius(float _Radius);
@@ -32,6 +34,8 @@ public:
     const tLightInfo& GetLightInfo() { return m_Info; }
 
 public:
+    void CreateShadowMap();
+
     virtual void FinalTick() override;
     virtual void SaveToFile(FILE* _File) override;
     virtual void LoadFromFile(FILE* _File) override;

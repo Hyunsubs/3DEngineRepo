@@ -17,6 +17,7 @@ private:
     UINT                    m_LayerCheck;       // 원하는 레이어만 카메라에 찍히도록 설정
 
     PROJ_TYPE               m_ProjType;
+    class CFrustum*         m_Frustum;
 
     float                   m_Width;
     float                   m_Height;
@@ -112,6 +113,7 @@ public:
 public:
     CLONE(CCamera);
     CCamera();
+    CCamera(const CCamera& _Other);
     ~CCamera();
 
     friend class CRenderMgr;

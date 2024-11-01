@@ -123,6 +123,23 @@ Vec3 CTransform::GetWorldScale()
 	return vWorldScale;
 }
 
+CTransform& CTransform::operator=(const CTransform& _Other)
+{
+	m_RelativePos = _Other.m_RelativePos;
+	m_RelativeScale = _Other.m_RelativeScale;
+	m_RelativeRotation = _Other.m_RelativeRotation;
+	m_matWorldInv = _Other.m_matWorldInv;
+	m_IndependentScale = _Other.m_IndependentScale;
+
+	for (int i = 0; i < 3; i++)
+	{
+		m_RelativeDir[i] = _Other.m_RelativeDir[i];
+		m_WorldDir[i] = _Other.m_WorldDir[i];
+	}
+
+	return *(this);
+}
+
 void CTransform::SaveToFile(FILE* _File)
 {
 	fwrite(&m_RelativePos, sizeof(Vec3), 1, _File);

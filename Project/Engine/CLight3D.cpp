@@ -6,12 +6,14 @@
 #include "CCamera.h"
 
 #include "CAssetMgr.h"
+#include "CMRT.h"
 
 CLight3D::CLight3D()
 	: CComponent(COMPONENT_TYPE::LIGHT3D)
 	, m_Info{}
 	, m_LightIdx(-1)
 	, m_Cam(nullptr)
+	, m_ShadowMapMtrl(nullptr)
 {
 	SetLightType(LIGHT_TYPE::DIRECTIONAL);
 
@@ -44,6 +46,33 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 	{
 		m_VolumeMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 		m_LightMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DirLightMtrl");
+
+		// ShadowMap Mtrl
+		m_ShadowMapMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"DirLightShadowMapMtrl");
+
+		// 광원 카메라 옵션 설정
+		m_Cam->Camera()->SetProjType(ORTHOGRAPHIC);
+		m_Cam->Camera()->SetWidth(8192);
+		m_Cam->Camera()->SetHeight(8192);
+		m_Cam->Camera()->SetLayerAll();
+		m_Cam->Camera()->SetLayer(31, false);
+		m_Cam->Camera()->SetScale(1.f);
+
+		// 8192, 8192 해상도 ShadowMap 생성
+		Ptr<CTexture> pShadowMap = new CTexture;
+		pShadowMap->Create(8192, 8192, DXGI_FORMAT_R32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+
+		Ptr<CTexture> pShdowMapDepth = new CTexture;
+		pShdowMapDepth->Create(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL);
+
+
+		// MRT 생성
+		if (nullptr != m_ShadowMapMRT)
+			m_ShadowMapMRT = new CMRT;
+
+		m_ShadowMapMRT->Create(1, &pShadowMap, pShdowMapDepth);
+		// Vec4 vClearColor = Vec4(-1.f, 0.f, 0.f, 0.f);
+		m_ShadowMapMRT->SetClearColor(&Vec4(-1.f, 0.f, 0.f, 0.f), true);
 	}
 
 	else if (m_Info.Type == LIGHT_TYPE::POINT)

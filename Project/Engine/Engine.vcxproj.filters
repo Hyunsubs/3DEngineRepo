@@ -172,6 +172,9 @@
     <ClInclude Include="CDecal.h">
       <Filter>08. Component\RenderComponent\04. Decal</Filter>
     </ClInclude>
+    <ClInclude Include="CFrustum.h">
+      <Filter>08. Component\07. Camera\Frustum</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -326,6 +329,9 @@
     </ClCompile>
     <ClCompile Include="func.cpp">
       <Filter>01. Header</Filter>
+    </ClCompile>
+    <ClCompile Include="CFrustum.cpp">
+      <Filter>08. Component\07. Camera\Frustum</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -505,6 +511,9 @@
     </Filter>
     <Filter Include="04, Manager\06. RenderMgr\MRT">
       <UniqueIdentifier>{e16c0fb4-864b-432e-9d53-85368b008497}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="08. Component\07. Camera\Frustum">
+      <UniqueIdentifier>{532b4b03-748e-4a22-b802-61cc7e8f6b7e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

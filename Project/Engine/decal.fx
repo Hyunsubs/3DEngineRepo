@@ -87,10 +87,13 @@ PS_OUT PS_Decal(VS_OUT _in)
         vEmissive = g_tex_2.Sample(g_sam_0, vUV);
     }
     
-    vColor.rgb *= vColor.a;
+    // AlbedoTarget은 AlphaBlending 사용
     output.vAlbedo = vColor;
+    
+    // EmissiveTarget은 One One Blending 사용, 알파를 곱한 색상을 출력하게 해야함
+    vEmissive.rgb *= vEmissive.a;
     output.vEmissive = vEmissive;
-   
+    
     return output;
 }
 

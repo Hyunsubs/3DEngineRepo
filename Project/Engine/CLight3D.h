@@ -11,6 +11,12 @@ private:
     Ptr<CMesh>      m_VolumeMesh;
     Ptr<CMaterial>  m_LightMtrl;
 
+    // ShadowMap MRT
+    class CMRT*     m_ShadowMapMRT;
+
+    // ShadowMap Material
+    Ptr<CMaterial>  m_ShadowMapMtrl;
+
     // 광원 시점에서 찍은 주변 사물의 깊이
     Ptr<CTexture>   m_ShadowMapTex;
 

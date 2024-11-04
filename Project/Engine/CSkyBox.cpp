@@ -76,6 +76,11 @@ void CSkyBox::Render()
 	GetMesh()->Render();
 }
 
+void CSkyBox::render_shadowmap()
+{
+
+}
+
 void CSkyBox::SaveToFile(FILE* _File)
 {
 

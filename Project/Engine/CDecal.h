@@ -16,6 +16,7 @@ public:
 public:
     virtual void FinalTick() override;
     virtual void Render() override;
+    virtual void render_shadowmap() override;
 
 public:
     virtual void SaveToFile(FILE* _File) override;   // 파일에 컴포넌트의 정보를 저장

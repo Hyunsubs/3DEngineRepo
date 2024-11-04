@@ -154,6 +154,11 @@ void CParticleSystem::Render()
 	m_ModuleBuffer->Clear(21);
 }
 
+void CParticleSystem::render_shadowmap()
+{
+
+}
+
 
 
 void CParticleSystem::CaculateSpawnCount()

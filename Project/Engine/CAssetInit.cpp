@@ -727,7 +727,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	// Dir Light ShadowMap Shader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\shadowmap.fx", "VS_DirLightShadowMap");
-	pShader->CreatePixelShader(L"shader\\shadowmap.fx", "PS_DirLight");
+	pShader->CreatePixelShader(L"shader\\shadowmap.fx", "PS_DirLightShadowMap");
 	pShader->SetRSType(RS_TYPE::CULL_BACK);
 	pShader->SetDSType(DS_TYPE::LESS);
 	pShader->SetBSType(BS_TYPE::DEFAULT);

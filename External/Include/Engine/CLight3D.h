@@ -11,6 +11,18 @@ private:
     Ptr<CMesh>      m_VolumeMesh;
     Ptr<CMaterial>  m_LightMtrl;
 
+    // ShadowMap MRT
+    class CMRT*     m_ShadowMapMRT;
+
+    // ShadowMap Material
+    Ptr<CMaterial>  m_ShadowMapMtrl;
+
+    // 광원이 보유한 카메라
+    CGameObject*    m_Cam;
+
+    // 타겟 포지션
+    Vec3            m_TargetPos;
+
 
 public:
     void SetLightType(LIGHT_TYPE _Type);
@@ -30,6 +42,8 @@ public:
     const tLightInfo& GetLightInfo() { return m_Info; }
 
 public:
+    void CreateShadowMap();
+
     virtual void FinalTick() override;
     virtual void SaveToFile(FILE* _File) override;
     virtual void LoadFromFile(FILE* _File) override;

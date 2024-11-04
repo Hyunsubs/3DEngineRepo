@@ -15,7 +15,6 @@
 
 #include "CFrustum.h"
 
-
 CCamera::CCamera()
 	: CComponent(COMPONENT_TYPE::CAMERA)
 	, m_Priority(-1)
@@ -25,7 +24,7 @@ CCamera::CCamera()
 	, m_Width(0)
 	, m_Height(0)
 	, m_Far(100000.f)
-	, m_FOV( XM_PI / 2.f)
+	, m_FOV(XM_PI / 2.f)
 	, m_ProjectionScale(1.f)
 {
 	Vec2 vResolution = CDevice::GetInst()->GetResolution();
@@ -112,6 +111,7 @@ void CCamera::FinalTick()
 	m_matViewInv = XMMatrixInverse(nullptr, m_matView);
 	m_matProjInv = XMMatrixInverse(nullptr, m_matProj);
 
+
 	// Frustum Update
 	m_Frustum->FinalTick();
 }
@@ -133,7 +133,7 @@ void CCamera::SortGameObject()
 		const vector<CGameObject*>& vecObjects = pLayer->GetObjects();
 		for (size_t j = 0; j < vecObjects.size(); ++j)
 		{
-			if ( nullptr == vecObjects[j]->GetRenderComponent()
+			if (nullptr == vecObjects[j]->GetRenderComponent()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMesh()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()
 				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()->GetShader())
@@ -142,23 +142,19 @@ void CCamera::SortGameObject()
 			}
 
 			// 절두체 검사를 진행 함, 실패 함
-			// 반지름 값을 넣어주어 당장은 중앙점에서 반지름만큼
-			// 넘어가는지만 확인함
-			// 이것의 문제는 로컬 공간에서 길이가 1로 정의된 메쉬들에게만 적용이 되기에
-			// Bounding Box라는 것을 따로 구현하여 이것이 렌더 가능한 범위가 어디까지 인지 따로 정의할 수 있어야 함
-			if ( vecObjects[j]->GetRenderComponent()->IsFrustumCheck()
+			/*if ( vecObjects[j]->GetRenderComponent()->IsFrustumCheck()
 				&& false == m_Frustum->FrustumCheck(vecObjects[j]->Transform()->GetWorldPos()
 												  , vecObjects[j]->Transform()->GetWorldScale().x / 2.f))
 			{
 				continue;
-			}
+			}*/
 
 			Ptr<CGraphicShader> pShader = vecObjects[j]->GetRenderComponent()->GetMaterial()->GetShader();
 			SHADER_DOMAIN Domain = pShader->GetDomain();
 
 			switch (Domain)
 			{
-			case DOMAIN_DEFERRED:				
+			case DOMAIN_DEFERRED:
 				m_vecDeferred.push_back(vecObjects[j]);
 				break;
 			case DOMAIN_DECAL:
@@ -239,7 +235,7 @@ void CCamera::render_transparent()
 void CCamera::render_effect()
 {
 	// EffectMRT 로 변경
-	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->Clear();	
+	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->Clear();
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT)->OMSet();
 
 	// Effect
@@ -251,7 +247,7 @@ void CCamera::render_effect()
 	// EffectBlurMRT 로 변경
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->ClearRT();
 	CRenderMgr::GetInst()->GetMRT(MRT_TYPE::EFFECT_BLUR)->OMSet();
-		
+
 	Ptr<CMaterial> pBlurMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"BlurMtrl");
 	Ptr<CMesh> pRectMesh = CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh");
 
@@ -311,6 +307,52 @@ void CCamera::clear()
 	m_vecUI.clear();
 }
 
+void CCamera::SortGameObject_ShadowMap()
+{
+	CLevel* pLevel = CLevelMgr::GetInst()->GetCurrentLevel();
+
+	for (UINT i = 0; i < MAX_LAYER; ++i)
+	{
+		if (false == (m_LayerCheck & (1 << i)))
+		{
+			continue;
+		}
+
+		CLayer* pLayer = pLevel->GetLayer(i);
+
+		const vector<CGameObject*>& vecObjects = pLayer->GetObjects();
+		for (size_t j = 0; j < vecObjects.size(); ++j)
+		{
+			if (nullptr == vecObjects[j]->GetRenderComponent()
+				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMesh()
+				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()
+				|| nullptr == vecObjects[j]->GetRenderComponent()->GetMaterial()->GetShader())
+			{
+				continue;
+			}
+
+			// 절두체 검사를 진행 함, 실패 함
+			/*if ( vecObjects[j]->GetRenderComponent()->IsFrustumCheck()
+				&& false == m_Frustum->FrustumCheck(vecObjects[j]->Transform()->GetWorldPos()
+												  , vecObjects[j]->Transform()->GetWorldScale().x / 2.f))
+			{
+				continue;
+			}*/
+
+			m_vecShadowMap.push_back(vecObjects[j]);
+		}
+	}
+}
+
+void CCamera::render_shadowmap()
+{
+	for (size_t i = 0; i < m_vecShadowMap.size(); ++i)
+	{
+		m_vecShadowMap[i]->GetRenderComponent()->render_shadowmap();
+	}
+
+	m_vecShadowMap.clear();
+}
 
 
 void CCamera::SaveToFile(FILE* _File)

@@ -31,6 +31,10 @@ void CDecal::Render()
 	GetMesh()->Render();
 }
 
+void CDecal::render_shadowmap()
+{
+}
+
 void CDecal::SaveToFile(FILE* _File)
 {
 }

@@ -13,30 +13,109 @@ CLight3D::CLight3D()
 	, m_Info{}
 	, m_LightIdx(-1)
 	, m_Cam(nullptr)
-	, m_ShadowMapMtrl(nullptr)
+	, m_ShadowMapMRT(nullptr)
 {
-	SetLightType(LIGHT_TYPE::DIRECTIONAL);
-
 	// 광원 전용 카메라
 	m_Cam = new CGameObject;
 	m_Cam->AddComponent(new CTransform);
 	m_Cam->AddComponent(new CCamera);
+
+	// 광원 타입 설정
+	SetLightType(LIGHT_TYPE::DIRECTIONAL);
 }
 
 CLight3D::CLight3D(const CLight3D& _Origin)
 	: CComponent(_Origin)
 	, m_Info(_Origin.m_Info)
-	, m_LightIdx(-1)	
+	, m_LightIdx(-1)
 {
-	SetLightType(m_Info.Type);	
+	// 카메라 복사
 	m_Cam = _Origin.m_Cam->Clone();
+
+	// 광원 타입 설정
+	SetLightType(m_Info.Type);
 }
 
 CLight3D::~CLight3D()
 {
 	if (nullptr != m_Cam)
 		delete m_Cam;
+
+	if (nullptr != m_ShadowMapMRT)
+		delete m_ShadowMapMRT;
 }
+
+void CLight3D::FinalTick()
+{
+	m_Info.WorldPos = Transform()->GetWorldPos();
+	m_Info.WorldDir = Transform()->GetWorldDir(DIR::FRONT);
+
+	// 광원의 위치설정
+	if (m_Info.Type == LIGHT_TYPE::DIRECTIONAL)
+	{
+		Transform()->SetRelativePos(m_TargetPos + -m_Info.WorldDir * 10000.f);
+	}
+
+	// PointLight, SphereMesh, r = 0.5f
+	Transform()->SetRelativeScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, m_Info.Radius * 2.f);
+
+	// 자신을 RenderMgr 에 등록시킴
+	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
+
+	// DebugShape
+	if (m_Info.Type == LIGHT_TYPE::POINT)
+	{
+		DrawDebugSphere(Transform()->GetWorldMat(), Vec4(0.f, 1.f, 0.f, 1.f), 0.f, true);
+	}
+}
+
+void CLight3D::Render()
+{
+	Transform()->Binding();
+
+	// 광원 인덱스	
+	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx);
+
+	// 광원 카메라로 투영시킬때 사용할 ViewProj 행렬
+	m_LightMtrl->SetScalarParam(MAT_0, m_Cam->Camera()->GetViewMat() * m_Cam->Camera()->GetProjMat());
+
+	// ShadowMap 정보
+	m_LightMtrl->SetTexParam(TEX_2, m_ShadowMapMRT->GetRT(0));
+
+	// 재질 바인딩
+	m_LightMtrl->Binding();
+
+	// 렌더링
+	m_VolumeMesh->Render();
+}
+
+void CLight3D::CreateShadowMap()
+{
+	// 카메라의 Transform 에 Light3D 의 Transform 정보를 복사
+	*m_Cam->Transform() = *Transform();
+
+	// 현재 카메라의 위치를 기준으로 ViewMat, ProjMat 를 계산한다.
+	m_Cam->Camera()->FinalTick();
+
+	// 광원 카메라의 View Proj 정보를 상수버퍼 전역변수에 세팅한다.
+	g_Trans.matView = m_Cam->Camera()->GetViewMat();
+	g_Trans.matProj = m_Cam->Camera()->GetProjMat();
+	g_Trans.matViewInv = m_Cam->Camera()->GetViewMatInv();
+	g_Trans.matProjInv = m_Cam->Camera()->GetProjMatInv();
+
+	// MRT 설정
+	m_ShadowMapMRT->Clear();
+	m_ShadowMapMRT->OMSet();
+
+	// ShdowMap Mtrl Binding
+	m_ShadowMapMtrl->Binding();
+
+	m_Cam->Camera()->SortGameObject_ShadowMap();
+	m_Cam->Camera()->render_shadowmap();
+}
+
+
+
 
 void CLight3D::SetLightType(LIGHT_TYPE _Type)
 {
@@ -65,14 +144,13 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 		Ptr<CTexture> pShdowMapDepth = new CTexture;
 		pShdowMapDepth->Create(8192, 8192, DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL);
 
-
 		// MRT 생성
-		if (nullptr != m_ShadowMapMRT)
+		if (nullptr == m_ShadowMapMRT)
 			m_ShadowMapMRT = new CMRT;
 
 		m_ShadowMapMRT->Create(1, &pShadowMap, pShdowMapDepth);
-		// Vec4 vClearColor = Vec4(-1.f, 0.f, 0.f, 0.f);
-		m_ShadowMapMRT->SetClearColor(&Vec4(-1.f, 0.f, 0.f, 0.f), true);
+		Vec4 vClearColor = Vec4(-1.f, 0.f, 0.f, 0.f);
+		m_ShadowMapMRT->SetClearColor(&vClearColor, true);
 	}
 
 	else if (m_Info.Type == LIGHT_TYPE::POINT)
@@ -89,41 +167,9 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 }
 
 
-void CLight3D::CreateShadowMap()
-{
-}
-
-void CLight3D::FinalTick()
-{
-	m_Info.WorldPos = Transform()->GetWorldPos();
-	m_Info.WorldDir = Transform()->GetWorldDir(DIR::FRONT);
-
-	// PointLight, SphereMesh, r = 0.5f
-	Transform()->SetRelativeScale(m_Info.Radius * 2.f, m_Info.Radius * 2.f, m_Info.Radius * 2.f);
-
-	// 자신을 RenderMgr 에 등록시킴
-	m_LightIdx = CRenderMgr::GetInst()->RegisterLight3D(this);
-
-	// DebugShape
-	if (m_Info.Type == LIGHT_TYPE::POINT)
-	{
-		DrawDebugSphere(Transform()->GetWorldMat(), Vec4(0.f, 1.f, 0.f, 1.f), 0.f, true);
-	}
-}
-
-void CLight3D::Render()
-{
-	Transform()->Binding();
-
-	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx);
-	m_LightMtrl->Binding();
-
-	m_VolumeMesh->Render();
-}
-
 void CLight3D::SetRadius(float _Radius)
 {
-	m_Info.Radius = _Radius;	
+	m_Info.Radius = _Radius;
 }
 
 void CLight3D::SaveToFile(FILE* _File)

@@ -17,10 +17,12 @@ private:
     // ShadowMap Material
     Ptr<CMaterial>  m_ShadowMapMtrl;
 
-    // 광원 시점에서 찍은 주변 사물의 깊이
-    Ptr<CTexture>   m_ShadowMapTex;
-
+    // 광원이 보유한 카메라
     CGameObject*    m_Cam;
+
+    // 타겟 포지션
+    Vec3            m_TargetPos;
+
 
 public:
     void SetLightType(LIGHT_TYPE _Type);

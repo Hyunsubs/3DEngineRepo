@@ -38,6 +38,7 @@ public:
 public:
     virtual void FinalTick() override;
     virtual void Render() override;
+    virtual void render_shadowmap() override;
 
     void CaculateSpawnCount();
 

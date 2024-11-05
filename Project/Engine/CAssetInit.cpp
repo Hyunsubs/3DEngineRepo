@@ -46,7 +46,7 @@ void CAssetMgr::CreateEngineMesh()
 	v.vNormal = Vec3(0.f, 0.f, -1.f);
 	v.vBinormal = Vec3(0.f, -1.f, 0.f);
 	arrVtx[0] = v;
-		
+
 	v.vPos = Vec3(0.5f, 0.5f, 0.f);
 	v.vColor = Vec4(0.f, 1.f, 0.f, 1.f);
 	v.vUV = Vec2(1.f, 0.f);
@@ -85,7 +85,7 @@ void CAssetMgr::CreateEngineMesh()
 	// CircleMesh 
 	vector<Vtx> vecVtx;
 	vector<UINT> vecIdx;
-	
+
 	int Slice = 40;
 	float fTheta = XM_2PI / Slice;
 	float Radius = 0.5f;
@@ -464,24 +464,24 @@ void CAssetMgr::CreateEngineTexture()
 	// PostProcess 용도 텍스쳐 생성
 	Vec2 Resolution = CDevice::GetInst()->GetResolution();
 	Ptr<CTexture> pPostProcessTex = CreateTexture(
-									L"PostProcessTex"
-									, (UINT)Resolution.x, (UINT)Resolution.y
-									, DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_BIND_SHADER_RESOURCE);
-		
-	Ptr<CTexture> pEffectTarget   = CreateTexture(
-									L"EffectTargetTex"
-									, (UINT)(Resolution.x), (UINT)(Resolution.y)
-									, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+		L"PostProcessTex"
+		, (UINT)Resolution.x, (UINT)Resolution.y
+		, DXGI_FORMAT_R8G8B8A8_UNORM, D3D11_BIND_SHADER_RESOURCE);
 
-	Ptr<CTexture> pEffectDepth    = CreateTexture(
-									L"EffectDepthStencilTex"
-									, (UINT)(Resolution.x), (UINT)(Resolution.y)
-									, DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL);
+	Ptr<CTexture> pEffectTarget = CreateTexture(
+		L"EffectTargetTex"
+		, (UINT)(Resolution.x), (UINT)(Resolution.y)
+		, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
 
-	Ptr<CTexture> pEffectBlurTarget   = CreateTexture(
-									  L"EffectBlurTargetTex"
-									, (UINT)(Resolution.x), (UINT)(Resolution.y)
-									, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
+	Ptr<CTexture> pEffectDepth = CreateTexture(
+		L"EffectDepthStencilTex"
+		, (UINT)(Resolution.x), (UINT)(Resolution.y)
+		, DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL);
+
+	Ptr<CTexture> pEffectBlurTarget = CreateTexture(
+		L"EffectBlurTargetTex"
+		, (UINT)(Resolution.x), (UINT)(Resolution.y)
+		, DXGI_FORMAT_R32G32B32A32_FLOAT, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE);
 
 
 
@@ -538,7 +538,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_MASKED);
-	
+
 	pShader->AddTexParam(TEX_0, "OutputTexture");
 
 	AddAsset(L"Std2DShader", pShader);
@@ -549,7 +549,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->CreateVertexShader(L"shader\\std2d.fx", "VS_Std2D");
 	pShader->CreatePixelShader(L"shader\\std2d.fx", "PS_Std2D_Alphablend");
 
-	pShader->SetRSType(RS_TYPE::CULL_NONE);	
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSType(BS_TYPE::ALPHABLEND);
 
@@ -575,7 +575,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\debug.fx", "VS_DebugShape");
 	pShader->CreatePixelShader(L"shader\\debug.fx", "PS_DebugShape");
-		
+
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
 
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
@@ -608,7 +608,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	pShader->CreateVertexShader(L"shader\\tilemap.fx", "VS_TileMap");
 	pShader->CreatePixelShader(L"shader\\tilemap.fx", "PS_TileMap");
-	
+
 	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetDSType(DS_TYPE::LESS);
 	pShader->SetBSType(BS_TYPE::DEFAULT);
@@ -671,7 +671,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetDSType(DS_TYPE::NO_TEST_NO_WRITE);
 	pShader->SetBSType(BS_TYPE::ALPHABLEND);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_POSTPROCESS);
-	AddAsset(L"EffectMergeShader", pShader);	
+	AddAsset(L"EffectMergeShader", pShader);
 
 	// Std3DShader
 	pShader = new CGraphicShader;
@@ -708,7 +708,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
 
 	pShader->AddTexParam(TEX_0, "Albedo Texture");
-	
+
 	AddAsset(L"SkyBoxShader", pShader);
 
 	// DecalShader
@@ -724,7 +724,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 
 	AddAsset(L"DecalShader", pShader);
 
-	// Dir Light ShadowMap Shader
+	// DirLightShadowMap Shader
 	pShader = new CGraphicShader;
 	pShader->CreateVertexShader(L"shader\\shadowmap.fx", "VS_DirLightShadowMap");
 	pShader->CreatePixelShader(L"shader\\shadowmap.fx", "PS_DirLightShadowMap");
@@ -733,6 +733,24 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_SHADOWMAP);
 	AddAsset(L"DirLightShadowMap", pShader);
+
+	// Tessellation Test Shader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\tess_test.fx", "VS_Tess");
+	pShader->CreateHullShader(L"shader\\tess_test.fx", "HS_Tess");
+	pShader->CreateDomainShader(L"shader\\tess_test.fx", "DS_Tess");
+	pShader->CreatePixelShader(L"shader\\tess_test.fx", "PS_Tess");
+
+	pShader->SetRSType(RS_TYPE::WIRE_FRAME);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_OPAQUE);
+
+	pShader->AddScalarParam(FLOAT_0, "TessFactor");
+	pShader->AddScalarParam(INT_0, "TessFactor");
+
+	AddAsset(L"TessTestShader", pShader);
 }
 
 #include "CParticleTickCS.h"
@@ -762,7 +780,7 @@ void CAssetMgr::CreateEngineMaterial()
 
 	// EffectMtrl
 	pMtrl = new CMaterial(true);
-	pMtrl->SetShader(FindAsset<CGraphicShader>(L"EffectShader"));	
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"EffectShader"));
 	AddAsset(L"EffectMtrl", pMtrl);
 
 	// DebugShapeMtrl
@@ -801,12 +819,12 @@ void CAssetMgr::CreateEngineMaterial()
 
 	// BlurMtrl
 	pMtrl = new CMaterial(true);
-	pMtrl->SetShader(FindAsset<CGraphicShader>(L"BlurShader"));	
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"BlurShader"));
 	AddAsset(L"BlurMtrl", pMtrl);
 
 	// EffectMergeMtrl
 	pMtrl = new CMaterial(true);
-	pMtrl->SetShader(FindAsset<CGraphicShader>(L"EffectMergeShader"));	
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"EffectMergeShader"));
 	AddAsset(L"EffectMergeMtrl", pMtrl);
 
 	// Std3DMtrl
@@ -833,4 +851,9 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"DirLightShadowMap"));
 	AddAsset(L"DirLightShadowMapMtrl", pMtrl);
+
+	// TessTestMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"TessTestShader"));
+	AddAsset(L"TessTestMtrl", pMtrl);
 }

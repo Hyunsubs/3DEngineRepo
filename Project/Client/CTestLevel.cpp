@@ -86,13 +86,13 @@ void CTestLevel::CreateTestLevel()
 	pSkyBox->Transform()->SetRelativePos(0.f, 0.f, 0.f);
 	pSkyBox->Transform()->SetRelativeScale(1000.f, 1000.f, 1000.f);
 
-	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
-	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pSkyBox->SkyBox()->SetSkyBoxType(CUBE);
-
-	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
+	//Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\SkyWater.dds");
 	//pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	//pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);		
+	//pSkyBox->SkyBox()->SetSkyBoxType(CUBE);		
+
+	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
+	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
+	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
 
 	pLevel->AddObject(0, pSkyBox);
 
@@ -132,7 +132,7 @@ void CTestLevel::CreateTestLevel()
 
 	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_0, pTex);
 	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEX_1, pNTex);
-	pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEXCUBE_0, pSkyBoxTex);
+	//pPlayer->MeshRender()->GetMaterial()->SetTexParam(TEXCUBE_0, pSkyBoxTex);	
 	pLevel->AddObject(3, pPlayer);
 
 	// Decal Object 추가
@@ -148,6 +148,21 @@ void CTestLevel::CreateTestLevel()
 	//pDecal->Decal()->SetEmissiveTexture(CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\MagicCircle.png"));
 
 	pLevel->AddObject(3, pDecal);
+
+	// Player 추가
+	CGameObject* pTestObj = new CGameObject;
+	pTestObj->SetName(L"TessTest");
+	pTestObj->AddComponent(new CTransform);
+	pTestObj->AddComponent(new CMeshRender);
+
+	pTestObj->Transform()->SetRelativePos(-500.f, 1000.f, 0.f);
+	pTestObj->Transform()->SetRelativeScale(500.f, 500.f, 1.f);
+	pTestObj->Transform()->SetRelativeRotation(0.f, 0.f, 0.f);
+
+	pTestObj->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
+	pTestObj->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"TessTestMtrl"));
+	pLevel->AddObject(3, pTestObj);
+
 
 	ChangeLevel(pLevel, LEVEL_STATE::STOP);
 

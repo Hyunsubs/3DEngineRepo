@@ -64,7 +64,7 @@ void CAssetMgr::CreateEngineMesh()
 
 	// Index 버퍼 생성
 	UINT arrIdx[6] = {};
-	arrIdx[0] = 0;	arrIdx[1] = 1;	arrIdx[2] = 2;
+	arrIdx[0] = 2;	arrIdx[1] = 0;	arrIdx[2] = 1;
 	arrIdx[3] = 0; 	arrIdx[4] = 2;	arrIdx[5] = 3;
 
 	pMesh = new CMesh(true);
@@ -741,7 +741,7 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->CreateDomainShader(L"shader\\tess_test.fx", "DS_Tess");
 	pShader->CreatePixelShader(L"shader\\tess_test.fx", "PS_Tess");
 
-	pShader->SetRSType(RS_TYPE::WIRE_FRAME);
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
 	pShader->SetDSType(DS_TYPE::LESS);
 	pShader->SetBSType(BS_TYPE::DEFAULT);
 	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
@@ -751,6 +751,21 @@ void CAssetMgr::CreateEngineGraphicShader()
 	pShader->AddScalarParam(INT_0, "TessFactor");
 
 	AddAsset(L"TessTestShader", pShader);
+
+	// LandScape Shader
+	pShader = new CGraphicShader;
+	pShader->CreateVertexShader(L"shader\\landscape.fx", "VS_LandScape");
+	pShader->CreateHullShader(L"shader\\landscape.fx", "HS_LandScape");
+	pShader->CreateDomainShader(L"shader\\landscape.fx", "DS_LandScape");
+	pShader->CreatePixelShader(L"shader\\landscape.fx", "PS_LandScape");
+
+	pShader->SetRSType(RS_TYPE::CULL_NONE);
+	pShader->SetDSType(DS_TYPE::LESS);
+	pShader->SetBSType(BS_TYPE::DEFAULT);
+	pShader->SetTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
+	pShader->SetDomain(SHADER_DOMAIN::DOMAIN_DEFERRED);
+
+	AddAsset(L"LandScapeShader", pShader);
 }
 
 #include "CParticleTickCS.h"
@@ -856,4 +871,9 @@ void CAssetMgr::CreateEngineMaterial()
 	pMtrl = new CMaterial(true);
 	pMtrl->SetShader(FindAsset<CGraphicShader>(L"TessTestShader"));
 	AddAsset(L"TessTestMtrl", pMtrl);
+
+	// LandScapeMtrl
+	pMtrl = new CMaterial(true);
+	pMtrl->SetShader(FindAsset<CGraphicShader>(L"LandScapeShader"));
+	AddAsset(L"LandScapeMtrl", pMtrl);
 }

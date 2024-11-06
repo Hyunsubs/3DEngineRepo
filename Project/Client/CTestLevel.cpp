@@ -161,6 +161,7 @@ void CTestLevel::CreateTestLevel()
 
 	pTestObj->MeshRender()->SetMesh(CAssetMgr::GetInst()->FindAsset<CMesh>(L"RectMesh"));
 	pTestObj->MeshRender()->SetMaterial(CAssetMgr::GetInst()->FindAsset<CMaterial>(L"TessTestMtrl"));
+	pTestObj->MeshRender()->GetMaterial()->SetScalarParam(INT_0, 8);
 	pLevel->AddObject(3, pTestObj);
 
 

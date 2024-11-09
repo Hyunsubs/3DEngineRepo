@@ -3,6 +3,8 @@
 
 #include "CAssetMgr.h"
 
+#include "CTransform.h"
+
 CLandScape::CLandScape()
 	: CRenderComponent(COMPONENT_TYPE::LANDSCAPE)
 	, m_FaceX(1)
@@ -22,6 +24,12 @@ void CLandScape::FinalTick()
 
 void CLandScape::Render()
 {
+	Transform()->Binding();
+
+	GetMaterial()->GetShader()->SetRSType(RS_TYPE::WIRE_FRAME);
+	GetMaterial()->Binding();
+
+	GetMesh()->Render();
 }
 
 void CLandScape::SetFace(UINT _X, UINT _Z)

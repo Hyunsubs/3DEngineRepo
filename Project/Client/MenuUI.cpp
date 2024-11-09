@@ -3,11 +3,15 @@
 
 #include <Engine/CLevelMgr.h>
 #include <Engine/CLevel.h>
-#include <Engine/CAssetMgr.h>
-#include <Engine/assets.h>
-#include <Scripts/CScriptMgr.h>
 #include <Engine/CGameObject.h>
 #include <Engine/CScript.h>
+#include <Engine/CAssetMgr.h>
+#include <Engine/assets.h>
+#include <Engine/CRenderMgr.h>
+
+
+#include <Scripts/CScriptMgr.h>
+
 
 #include "CEditorMgr.h"
 #include "Inspector.h"
@@ -46,6 +50,8 @@ void MenuUI::Update()
 	GameObject();
 
 	Assets();	
+
+	RenderTarget();
 }
 
 void MenuUI::File()
@@ -202,6 +208,29 @@ void MenuUI::Assets()
 
 		ImGui::EndMenu();
 	}
+}
+
+void MenuUI::RenderTarget()
+{
+	if (ImGui::BeginMenu("RenderTarget"))
+	{
+		Ptr<CTexture> pTarget = CRenderMgr::GetInst()->GetSpecifiedTarget();
+
+		bool IsAlbedo = pTarget == CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex");
+		bool IsNoraml = pTarget == CAssetMgr::GetInst()->FindAsset<CTexture>(L"NormalTargetTex");
+		bool IsPosition = pTarget == CAssetMgr::GetInst()->FindAsset<CTexture>(L"PositionTargetTex");
+		bool IsDiffuse = pTarget == CAssetMgr::GetInst()->FindAsset<CTexture>(L"DiffuseTargetTex");
+		bool IsSpecular = pTarget == CAssetMgr::GetInst()->FindAsset<CTexture>(L"SpecularTargetTex");
+
+		if (ImGui::MenuItem("Albedo Target", nullptr, &IsAlbedo))
+		{
+			if (!IsAlbedo)
+				CRenderMgr::GetInst()->SetSpecifiedTarget(nullptr);
+			else
+				CRenderMgr::GetInst()->SetSpecifiedTarget(CAssetMgr::GetInst()->FindAsset<CTexture>(L"AlbedoTargetTex"));
+		}
+	}
+
 }
 
 

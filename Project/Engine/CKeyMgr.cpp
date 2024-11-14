@@ -21,6 +21,9 @@ UINT g_RealKey[(UINT)KEY::KEY_END] =
 
 	VK_LBUTTON,
 	VK_RBUTTON,
+
+	VK_NUMPAD0, VK_NUMPAD1, VK_NUMPAD2, VK_NUMPAD3, VK_NUMPAD4,
+	VK_NUMPAD5, VK_NUMPAD6, VK_NUMPAD7, VK_NUMPAD8, VK_NUMPAD9,
 };
 
 
@@ -115,9 +118,9 @@ void CKeyMgr::Tick()
 			m_MousePos = Vec2((float)ptMousePos.x, (float)ptMousePos.y);
 			m_DragDir = m_MousePos - m_PrevMousePos;
 		}
-		
+
 	}
-	
+
 	// 윈도우의 포커싱이 해제됨
 	else
 	{
@@ -135,5 +138,5 @@ void CKeyMgr::Tick()
 
 			m_vecKeyInfo[i].bPressed = false;
 		}
-	}	
+	}
 }

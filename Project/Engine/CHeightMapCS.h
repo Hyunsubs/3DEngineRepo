@@ -1,28 +1,21 @@
 #pragma once
 #include "CComputeShader.h"
 
+
 class CStructuredBuffer;
-
-struct tRaycasOut
-{
-    Vec2    Location;
-    UINT    Distance;
-    int     Success;
-};
-
 
 class CHeightMapCS :
     public CComputeShader
 {
 private:
-    Ptr<CTexture>   m_HeightMapTex;
-    Ptr<CTexture>   m_BrushTex;
+    Ptr<CTexture>       m_HeightMapTex;
+    Ptr<CTexture>       m_BrushTex;
 
-    Vec2            m_BrushPos;
-    Vec2            m_BrushScale;
+    CStructuredBuffer*  m_RaycastOut;
+    Vec2                m_BrushScale;
 
 public:
-    void SetBrushPos(Vec2 _BrushPos) { m_BrushPos = _BrushPos; }
+    void SetBrushPos(CStructuredBuffer* _Buffer) { m_RaycastOut = _Buffer; }
     void SetBrushScale(Vec2 _Scale) { m_BrushScale = _Scale; }
 
     void SetHeightMap(Ptr<CTexture> _HeightMap) { m_HeightMapTex = _HeightMap; }

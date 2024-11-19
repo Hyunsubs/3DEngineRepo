@@ -26,10 +26,10 @@ void CTestLevel::CreateTestLevel()
 	// Material
 	Ptr<CMaterial> pStd3DMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3DMtrl");
 	Ptr<CMaterial> pStd3D_DeferredMtrl = CAssetMgr::GetInst()->FindAsset<CMaterial>(L"Std3D_DeferredMtrl");
-
+	
 	// Level »ý¼º
 	CLevel* pLevel = new CLevel;
-
+	
 	pLevel->GetLayer(0)->SetName(L"Default");
 	pLevel->GetLayer(1)->SetName(L"Background");
 	pLevel->GetLayer(2)->SetName(L"Tile");
@@ -92,7 +92,7 @@ void CTestLevel::CreateTestLevel()
 
 	Ptr<CTexture> pSkyBoxTex = CAssetMgr::GetInst()->FindAsset<CTexture>(L"texture\\skybox\\Sky02.jpg");
 	pSkyBox->SkyBox()->SetSkyBoxTexture(pSkyBoxTex);
-	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);
+	pSkyBox->SkyBox()->SetSkyBoxType(SPHERE);		
 
 	pLevel->AddObject(0, pSkyBox);
 

@@ -16,14 +16,16 @@ private:
     int                     m_Priority;
     UINT                    m_LayerCheck;       // 원하는 레이어만 카메라에 찍히도록 설정
     PROJ_TYPE               m_ProjType;
-    class CFrustum* m_Frustum;
+    class CFrustum*         m_Frustum;
 
     float                   m_Width;
     float                   m_Height;
     float                   m_AspectRatio;      // 종횡 비
     float                   m_Far;              // 카메라가 볼 수 있는 시야 거리
     float                   m_FOV;              // Field Of View (시야 범위, 시야 각)
-    float                   m_ProjectionScale;
+    float                   m_ProjectionScale; 
+
+    tRay                    m_Ray;
 
     Matrix                  m_matView;
     Matrix                  m_matViewInv;
@@ -45,16 +47,16 @@ private:
 
 public:
     void SetPriority(int _Priority) { m_Priority = _Priority; }
-    void SetLayer(UINT _LayerIdx, bool _bCheck)
-    {
-        if (_bCheck)
-            m_LayerCheck |= (1 << _LayerIdx);
+    void SetLayer(UINT _LayerIdx, bool _bCheck) 
+    { 
+        if(_bCheck)
+            m_LayerCheck |= (1 << _LayerIdx); 
         else
             m_LayerCheck &= ~(1 << _LayerIdx);
     }
     void SetLayerAll() { m_LayerCheck = 0xffffffff; }
 
-    bool GetLayerCheck(UINT _LayerIdx) { return m_LayerCheck & (1 << _LayerIdx); }
+    bool GetLayerCheck(UINT _LayerIdx) { return m_LayerCheck& (1 << _LayerIdx); }
 
 
     void SetProjType(PROJ_TYPE _Type) { m_ProjType = _Type; }
@@ -81,9 +83,11 @@ public:
 
     void SetFOV(float _FOV) { m_FOV = _FOV; }
     float GetFOV() { return m_FOV; }
-
+    
     void SetScale(float _Scale) { m_ProjectionScale = _Scale; }
     float GetScale() { return m_ProjectionScale; }
+
+    const tRay& GetRay() { return m_Ray; }
 
     const Matrix& GetViewMat() { return m_matView; }
     const Matrix& GetViewMatInv() { return m_matViewInv; }
@@ -99,7 +103,7 @@ public:
     void render_masked();
     void render_effect();
     void render_transparent();
-    void render_particle();
+    void render_particle();        
     void render_postprocess();
     void render_ui();
 
@@ -109,12 +113,15 @@ public:
     void SortGameObject_ShadowMap();
     void render_shadowmap();
 
+private:
+    void CalcRay();
 
 public:
     virtual void Begin() override;
     virtual void FinalTick() override;
     virtual void SaveToFile(FILE* _File) override;
     virtual void LoadFromFile(FILE* _File) override;
+
 
 public:
     CLONE(CCamera);

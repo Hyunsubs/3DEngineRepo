@@ -9,13 +9,13 @@
 struct VS_IN
 {
     float3 vPos : POSITION;
-    float2 vUV : TEXCOORD;
+    float2 vUV : TEXCOORD;    
 };
 
 struct VS_OUT
 {
     float3 vLocalPos : POSITION;
-    float2 vUV : TEXCOORD;
+    float2 vUV : TEXCOORD;   
 };
 
 VS_OUT VS_Tess(VS_IN _in)
@@ -94,7 +94,7 @@ struct DS_OUT
 DS_OUT DS_Tess(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocation
                 , TessFactor _PatchTessFactor)
 {
-    HS_OUT input = (HS_OUT) 0.f;
+    HS_OUT input = (HS_OUT) 0.f;    
     for (int i = 0; i < 3; ++i)
     {
         input.vLocalPos += _in[i].vLocalPos * _Weight[i];

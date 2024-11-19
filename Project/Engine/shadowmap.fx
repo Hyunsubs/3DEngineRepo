@@ -18,7 +18,7 @@ VS_OUT VS_DirLightShadowMap(VS_IN _in)
 {
     VS_OUT output = (VS_OUT) 0.f;
         
-    output.vPosition = mul(float4(_in.vPos, 1.f), matWVP);
+    output.vPosition = mul(float4(_in.vPos, 1.f), matWVP);    
     
     // output.vPosition == (Px * Vz, Py * Vz, Pz * Vz, Vz)
     output.vProjPos = output.vPosition.xyz / output.vPosition.w;

@@ -127,17 +127,18 @@ CTransform& CTransform::operator=(const CTransform& _Other)
 {
 	m_RelativePos = _Other.m_RelativePos;
 	m_RelativeScale = _Other.m_RelativeScale;
-	m_RelativeRotation = _Other.m_RelativeRotation;
+	m_RelativeRotation = _Other.m_RelativeRotation;	
+	m_matWorld = _Other.m_matWorld;
 	m_matWorldInv = _Other.m_matWorldInv;
 	m_IndependentScale = _Other.m_IndependentScale;
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 3; ++i)
 	{
 		m_RelativeDir[i] = _Other.m_RelativeDir[i];
 		m_WorldDir[i] = _Other.m_WorldDir[i];
 	}
 
-	return *(this);
+	return *this;
 }
 
 void CTransform::SaveToFile(FILE* _File)

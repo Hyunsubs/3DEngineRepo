@@ -42,7 +42,7 @@ VS_OUT VS_DirLight(VS_IN _in)
     VS_OUT output = (VS_OUT) 0.f;
         
     output.vPosition = float4(_in.vPos * 2.f, 1.f);
-    output.vUV = _in.vUV;
+    output.vUV = _in.vUV;    
     
     return output;
 }
@@ -55,26 +55,26 @@ PS_OUT PS_DirLight(VS_OUT _in)
     float4 vViewPos = POS_TARGET.Sample(g_sam_0, _in.vUV);
     
     // 광원이 부딪힐 물체가 존재하지 않는다.
-    if (0.f == vViewPos.w)
+    if(0.f == vViewPos.w)
         discard;
     
     float3 vViewNormal = NORMAL_TARGET.Sample(g_sam_0, _in.vUV).xyz;
         
     // 그림자 판정
     int bShadow = false;
-    if (g_btex_2) // ShadowMap 텍스쳐가 있다면
+    if(g_btex_2) // ShadowMap 텍스쳐가 있다면
     {
         // 빛을 받을 지점(ViewPos) 을 WorldPos 로 변경하고, 광원시점으로 투영시킨다.
-        float3 vWorldPos = mul(float4(vViewPos.xyz, 1.f), matViewInv).xyz;
-        float4 vProjPos = mul(float4(vWorldPos, 1.f), LIGHT_VP);
+        float3 vWorldPos = mul(float4(vViewPos.xyz, 1.f), matViewInv).xyz;        
+        float4 vProjPos = mul(float4(vWorldPos, 1.f), LIGHT_VP);        
         vProjPos.xyz = vProjPos.xyz / vProjPos.w;
         
         // 광원으로 투영시킨 NDC 좌표를 UV 로 변환해서 광원시점에 기록된 물체의 깊이를 확인한다.
-        float2 vShadowMapUV = float2((vProjPos.x + 1.f) * 0.5f, 1.f - (vProjPos.y + 1.f) * 0.5f);
+        float2 vShadowMapUV = float2((vProjPos.x + 1.f) * 0.5f, 1.f - (vProjPos.y + 1.f) * 0.5f);        
         float fDist = g_tex_2.Sample(g_sam_0, vShadowMapUV).x;
         
         // 광원 시점에서 물체가 기록된 범위(시야 범위) 이내에서만 테스트를 진행한다.
-        if (0.f < vShadowMapUV.x && vShadowMapUV.x < 1.f
+        if (0.f < vShadowMapUV.x && vShadowMapUV.x < 1.f 
             && 0.f < vShadowMapUV.y && vShadowMapUV.y < 1.f)
         {
             // 광원시점에서 기록된 깊이값과, 투영된 깊이를 비교한다.
@@ -90,7 +90,7 @@ PS_OUT PS_DirLight(VS_OUT _in)
     tLight light = (tLight) 0.f;
     CalculateLight3D(LIGHT_IDX, vViewNormal, vViewPos.xyz, light);
         
-    if (bShadow)
+    if(bShadow)
     {
         output.vDiffuse = (light.Color + light.Ambient) * 0.1f;
     }
@@ -164,9 +164,9 @@ PS_OUT PS_PointLight(VS_OUT _in)
     CalculateLight3D(LIGHT_IDX, vViewNormal, vViewPos.xyz, light);
         
     output.vDiffuse = light.Color + light.Ambient;
-    output.vSpecular = light.SpecCoef;
+    output.vSpecular = light.SpecCoef;    
     output.vDiffuse.a = 1.f;
-    output.vSpecular.a = 1.f;
+    output.vSpecular.a = 1.f;    
    
     return output;
 }

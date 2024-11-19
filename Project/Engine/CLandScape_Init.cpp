@@ -46,6 +46,8 @@ void CLandScape::CreateMesh()
 			v.vTangent = Vec3(1.f, 0.f, 0.f);
 			v.vBinormal = Vec3(0.f, 0.f, -1.f);
 
+			v.vUV = Vec2((float)Col, (float)m_FaceZ - Row);
+
 			vecVtx.push_back(v);
 		}
 	}
@@ -77,7 +79,6 @@ void CLandScape::CreateMesh()
 	SetMesh(pMesh);
 }
 
-
 void CLandScape::CreateComputeShader()
 {
 	// HeightMapCS 가 있으면 찾아오고 없으면 컴파일해서 등록한다.
@@ -87,12 +88,47 @@ void CLandScape::CreateComputeShader()
 		m_HeightMapCS = new CHeightMapCS;
 		CAssetMgr::GetInst()->AddAsset<CComputeShader>(L"HeightMapCS", m_HeightMapCS.Get());
 	}
+
+	// RaycastCS 생성
+	m_RaycastCS = (CRaycastCS*)CAssetMgr::GetInst()->FindAsset<CComputeShader>(L"RaycastCS").Get();
+	if (nullptr == m_RaycastCS)
+	{
+		m_RaycastCS = new CRaycastCS;
+		CAssetMgr::GetInst()->AddAsset<CComputeShader>(L"RaycastCS", m_RaycastCS.Get());
+	}
+
+	// WeightMapCS 생성
+	m_WeightMapCS = (CWeightMapCS*)CAssetMgr::GetInst()->FindAsset<CComputeShader>(L"WeightMapCS").Get();
+	if (nullptr == m_WeightMapCS)
+	{
+		m_WeightMapCS = new CWeightMapCS;
+		CAssetMgr::GetInst()->AddAsset<CComputeShader>(L"WeightMapCS", m_WeightMapCS.Get());
+	}
 }
 
 void CLandScape::CreateTextureAndStructuredBuffer()
 {
+	// Raycasting 결과를 받는 용도의 구조화버퍼
+	m_RaycastOut = new CStructuredBuffer;
+	m_RaycastOut->Create(sizeof(tRaycastOut), 1, SB_TYPE::SRV_UAV, true);
 
+	// LandScape 용 텍스쳐 로딩
+	m_ColorTex = CAssetMgr::GetInst()->Load<CTexture>(L"texture\\LandScapeTexture\\LS_Color.dds", L"texture\\LandScapeTexture\\LS_Color.dds");
+	//m_ColorTex->GenerateMip(6);
+
+	m_NormalTex = CAssetMgr::GetInst()->Load<CTexture>(L"texture\\LandScapeTexture\\LS_Normal.dds", L"texture\\LandScapeTexture\\LS_Color.dds");
+	//m_NormalTex->GenerateMip(6);
+
+	// 가중치 WeightMap 용 StructuredBuffer
+	m_WeightMap = new CStructuredBuffer;
+
+	m_WeightWidth = 1024;
+	m_WeightHeight = 1024;
+
+	m_WeightMap->Create(sizeof(tWeight8), m_WeightWidth * m_WeightHeight, SB_TYPE::SRV_UAV, true, nullptr);
 }
+
+
 
 void CLandScape::CreateHeightMap(UINT _Width, UINT _Height)
 {

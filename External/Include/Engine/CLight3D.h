@@ -14,7 +14,7 @@ private:
     // ShadowMap MRT
     class CMRT*     m_ShadowMapMRT;
 
-    // ShadowMap Material
+    // ShadowMap 재질
     Ptr<CMaterial>  m_ShadowMapMtrl;
 
     // 광원이 보유한 카메라
@@ -22,6 +22,7 @@ private:
 
     // 타겟 포지션
     Vec3            m_TargetPos;
+
 
 
 public:
@@ -37,7 +38,6 @@ public:
     float GetAngle() { return m_Info.Angle; }
     Vec3 GetLightColor() { return m_Info.light.Color; }
     Vec3 GetLightAmbient() { return m_Info.light.Ambient; }
-
 
     const tLightInfo& GetLightInfo() { return m_Info; }
 

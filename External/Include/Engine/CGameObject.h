@@ -54,8 +54,7 @@ public:
     GET_COMPONENT(ParticleSystem, PARTICLESYSTEM);
     GET_COMPONENT(SkyBox, SKYBOX);
     GET_COMPONENT(Decal , DECAL);
-    GET_COMPONENT(LandScape , LANDSCAPE);
-
+    GET_COMPONENT(LandScape, LANDSCAPE);
 
 public:
     void Begin();

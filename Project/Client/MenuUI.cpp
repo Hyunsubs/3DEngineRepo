@@ -31,16 +31,16 @@ MenuUI::~MenuUI()
 
 void MenuUI::Tick()
 {
-	if (!IsActive())
-		return;
+    if (!IsActive())
+        return;
 
-	if (ImGui::BeginMainMenuBar())
-	{
+    if (ImGui::BeginMainMenuBar())
+    {
 
-		Update();
+        Update();
 
-		ImGui::EndMainMenuBar();
-	}
+        ImGui::EndMainMenuBar();
+    }
 }
 
 
@@ -89,14 +89,14 @@ void MenuUI::Level()
 
 		ImGui::BeginDisabled(LEVEL_STATE::PLAY == State);
 		if (ImGui::MenuItem("Play"))
-		{
+		{			
 			if (LEVEL_STATE::STOP == State)
 			{
 				wstring strLevelPath = CPathMgr::GetInst()->GetContentPath();
 				strLevelPath += L"level\\Temp.lv";
 				CLevelSaveLoad::SaveLevel(strLevelPath, pCurLevel);
 			}
-
+			
 			ChangeLevelState(LEVEL_STATE::PLAY);
 		}
 		ImGui::EndDisabled();
@@ -162,7 +162,7 @@ void MenuUI::AddScript()
 		CScriptMgr::GetScriptInfo(vecScriptsName);
 
 		for (size_t i = 0; i < vecScriptsName.size(); ++i)
-		{
+		{			
 			if (ImGui::MenuItem(string(vecScriptsName[i].begin(), vecScriptsName[i].end()).c_str()))
 			{
 				//CScript* pScript = CScriptMgr::GetScript(vecScriptsName[i]);
@@ -193,17 +193,17 @@ void MenuUI::Assets()
 	{
 		if (ImGui::MenuItem("Create Empty Material"))
 		{
-			Ptr<CMaterial> pMtrl = new CMaterial;
+			Ptr<CMaterial> pMtrl = new CMaterial;						
 			wstring Key = GetAssetKey(ASSET_TYPE::MATERIAL, L"Default Material");
 			CAssetMgr::GetInst()->AddAsset<CMaterial>(Key, pMtrl);
 			pMtrl->Save(Key);
 		}
 
-		EditorUI* pSpriteEditor = CEditorMgr::GetInst()->FindEditorUI("SpriteEditor");
+		EditorUI* pSpriteEditor = CEditorMgr::GetInst()->FindEditorUI("SpriteEditor");				
 		bool IsActive = pSpriteEditor->IsActive();
 
 		if (ImGui::MenuItem("Sprite Editor", nullptr, &IsActive))
-		{
+		{			
 			CEditorMgr::GetInst()->FindEditorUI("SpriteEditor")->SetActive(IsActive);
 		}
 
@@ -293,27 +293,27 @@ wstring MenuUI::GetAssetKey(ASSET_TYPE _Type, const wstring& _KeyFormat)
 	wstring Key;
 
 	switch (_Type)
-	{
+	{	
 	case ASSET_TYPE::MATERIAL:
 	{
 		Key = wstring(L"material\\") + _KeyFormat + L" %d.mtrl";
-	}
-	break;
+	}	
+		break;
 	case ASSET_TYPE::PREFAB:
 	{
 		Key = wstring(L"prefab\\") + _KeyFormat + L" %d.pref";
 	}
-	break;
+		break;
 	case ASSET_TYPE::SPRITE:
 	{
 		Key = wstring(L"sprite\\") + _KeyFormat + L" %d.sprite";
 	}
-	break;
+		break;
 	case ASSET_TYPE::FLIPBOOK:
 	{
 		Key = wstring(L"flipbook\\") + _KeyFormat + L" %d.flip";
 	}
-	break;
+		break;	
 	default:
 		assert(nullptr);
 		break;
@@ -323,9 +323,9 @@ wstring MenuUI::GetAssetKey(ASSET_TYPE _Type, const wstring& _KeyFormat)
 	wstring FilePath = CPathMgr::GetInst()->GetContentPath();
 
 	for (UINT i = 0; i < 0xffffffff; ++i)
-	{
+	{		
 		swprintf_s(szKey, 255, Key.c_str(), i);
-
+		
 		if (false == std::filesystem::exists(FilePath + szKey))
 		{
 			break;

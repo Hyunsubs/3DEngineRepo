@@ -118,9 +118,9 @@ void CKeyMgr::Tick()
 			m_MousePos = Vec2((float)ptMousePos.x, (float)ptMousePos.y);
 			m_DragDir = m_MousePos - m_PrevMousePos;
 		}
-
+		
 	}
-
+	
 	// 윈도우의 포커싱이 해제됨
 	else
 	{
@@ -138,5 +138,5 @@ void CKeyMgr::Tick()
 
 			m_vecKeyInfo[i].bPressed = false;
 		}
-	}
+	}	
 }

@@ -146,7 +146,9 @@ enum SHADER_DOMAIN
 	DOMAIN_POSTPROCESS, // 후처리
 	DOMAIN_UI,			// UI
 	DOMAIN_DEBUG,		// 디버그
-	DOMAIN_SHADOWMAP,	// 쉐도우 맵
+
+	DOMAIN_SHADOWMAP,	// 쉐도우맵
+
 	DOMAIN_NONE,		// 미설정
 };
 
@@ -221,7 +223,6 @@ enum class MRT_TYPE
 	DEFERRED,	// 5개
 	LIGHT,		// 2개
 	DECAL,		// 2개
-	SHADOWMAP,  // 1개
 
 	END,
 };

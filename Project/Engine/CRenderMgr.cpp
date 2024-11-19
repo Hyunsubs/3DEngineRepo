@@ -208,7 +208,6 @@ void CRenderMgr::Render(CCamera* _Cam)
 	// 광원 시점에서 물체들의 깊이를 기록
 	for (size_t i = 0; i < m_vecLight3D.size(); ++i)
 	{
-
 		m_vecLight3D[i]->CreateShadowMap();
 	}
 
@@ -252,7 +251,7 @@ void CRenderMgr::Render(CCamera* _Cam)
 	// MERGE ALBEDO + LIGHTS ==> SwapChain
 	// ===================================
 	m_arrMRT[(UINT)MRT_TYPE::SWAPCHAIN]->OMSet();
-	if (nullptr == m_SpecifiedTarget)
+	if (nullptr == m_SpecfiedTarget)
 	{
 		m_MergeMtrl->SetScalarParam(INT_0, 0);
 		m_MergeMtrl->SetTexParam(TEX_4, nullptr);
@@ -260,7 +259,7 @@ void CRenderMgr::Render(CCamera* _Cam)
 	else
 	{
 		m_MergeMtrl->SetScalarParam(INT_0, 1);
-		m_MergeMtrl->SetTexParam(TEX_4, m_SpecifiedTarget);
+		m_MergeMtrl->SetTexParam(TEX_4, m_SpecfiedTarget);
 	}
 	m_MergeMtrl->Binding();
 	m_RectMesh->Render();

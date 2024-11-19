@@ -2,8 +2,8 @@
 
 enum class KEY
 {
-	_0, _1, _2, _3, _4, _5, _6, _7, _8, _9,
-	Q, W, E, R, T, Y, U, I, O, P,
+	_0,	_1, _2, _3, _4, _5, _6, _7, _8, _9,
+	Q, W, E, R, T, Y, U, I, O, P, 
 	A, S, D, F, G, H, J, K, L,
 	Z, X, C, V, B, N, M,
 
@@ -21,7 +21,7 @@ enum class KEY
 
 	NUM0, NUM1, NUM2, NUM3, NUM4,
 	NUM5, NUM6, NUM7, NUM8, NUM9,
-
+	
 	KEY_END,
 };
 
@@ -51,7 +51,7 @@ private:
 	Vec2				m_MousePos;
 	Vec2				m_PrevMousePos;
 	Vec2				m_DragDir;
-
+		
 	Vec2				m_CapturePos;
 	bool				m_MouseCapture;
 
@@ -64,7 +64,7 @@ public:
 	Vec2 GetMousePos() { return m_MousePos; }
 	Vec2 GetDragDir() { return m_DragDir; }
 
-	void MouseCapture(bool _bCapture)
+	void MouseCapture(bool _bCapture) 
 	{
 		//m_MouseCapture = _bCapture;		
 		//m_CapturePos = m_MousePos;

@@ -32,6 +32,7 @@ public:
     UINT Width() { return m_Desc.Width; }
     UINT Height() { return m_Desc.Height; }
     bool IsCubeMap() { return m_Desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE; }
+    UINT GetArraySize() { return m_Desc.ArraySize; }
 
 public:
     // _Flags : D3D11_BIND_FLAG

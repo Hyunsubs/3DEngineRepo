@@ -11,6 +11,7 @@ CSkyBox::CSkyBox()
 	, m_Type(SPHERE)
 {
 	SetSkyBoxType(m_Type);
+
 	SetFrustumCheck(false);
 }
 

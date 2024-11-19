@@ -103,4 +103,20 @@ struct tParticleModule
 	// Module On / Off
     int     Module[7];
 };
+
+
+struct tRaycastOut
+{
+    float2 Location;
+    uint Distance;
+    int Success;
+};
+
+
+struct tWeight8
+{
+    float arrWeight[8];
+};
+
+
 #endif

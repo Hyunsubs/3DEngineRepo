@@ -29,9 +29,6 @@ private:
     tParticleModule         m_Module;               // 파티클의 기능 정의
 
 
-
-
-
 public:
     void SetParticleTexture(Ptr<CTexture> _Texture) { m_ParticleTex = _Texture; }
 

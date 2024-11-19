@@ -25,7 +25,7 @@ private:
     ComPtr<ID3DBlob>			    m_PSBlob;
 
     ComPtr<ID3D11VertexShader>      m_VS;
-    ComPtr<ID3D11HullShader>      m_HS;
+    ComPtr<ID3D11HullShader>        m_HS;
     ComPtr<ID3D11DomainShader>      m_DS;
     ComPtr<ID3D11GeometryShader>    m_GS;
     ComPtr<ID3D11PixelShader>	    m_PS;

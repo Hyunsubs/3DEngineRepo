@@ -15,6 +15,7 @@ private:
 
     bool                m_FrustumCheck; // 절두체 체크를 받을것인지 말것인지
 
+
 public:
     void SetMesh(Ptr<CMesh> _Mesh) { m_Mesh = _Mesh; }
     void SetMaterial(Ptr<CMaterial> _Mtrl);
@@ -27,11 +28,11 @@ public:
     Ptr<CMaterial> GetDynamicMaterial();
 
     void SetFrustumCheck(bool _Check) { m_FrustumCheck = _Check; }
-    bool IsFrustumCheck() {return m_FrustumCheck; }
+    bool IsFrustumCheck() { return m_FrustumCheck; }
 
 public:
     virtual void FinalTick() = 0;
-    virtual void Render() = 0;
+    virtual void Render() = 0;   
     virtual void render_shadowmap();
 
     virtual CRenderComponent* Clone() = 0;

@@ -27,7 +27,7 @@ CLight3D::CLight3D()
 CLight3D::CLight3D(const CLight3D& _Origin)
 	: CComponent(_Origin)
 	, m_Info(_Origin.m_Info)
-	, m_LightIdx(-1)
+	, m_LightIdx(-1)	
 {
 	// 카메라 복사
 	m_Cam = _Origin.m_Cam->Clone();
@@ -72,15 +72,15 @@ void CLight3D::FinalTick()
 void CLight3D::Render()
 {
 	Transform()->Binding();
-
+		
 	// 광원 인덱스	
-	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx);
+	m_LightMtrl->SetScalarParam(INT_0, m_LightIdx); 
 
 	// 광원 카메라로 투영시킬때 사용할 ViewProj 행렬
-	m_LightMtrl->SetScalarParam(MAT_0, m_Cam->Camera()->GetViewMat() * m_Cam->Camera()->GetProjMat());
+	m_LightMtrl->SetScalarParam(MAT_0, m_Cam->Camera()->GetViewMat() * m_Cam->Camera()->GetProjMat()); 
 
 	// ShadowMap 정보
-	m_LightMtrl->SetTexParam(TEX_2, m_ShadowMapMRT->GetRT(0));
+	m_LightMtrl->SetTexParam(TEX_2, m_ShadowMapMRT->GetRT(0)); 
 
 	// 재질 바인딩
 	m_LightMtrl->Binding();
@@ -90,7 +90,7 @@ void CLight3D::Render()
 }
 
 void CLight3D::CreateShadowMap()
-{
+{	
 	// 카메라의 Transform 에 Light3D 의 Transform 정보를 복사
 	*m_Cam->Transform() = *Transform();
 
@@ -169,7 +169,7 @@ void CLight3D::SetLightType(LIGHT_TYPE _Type)
 
 void CLight3D::SetRadius(float _Radius)
 {
-	m_Info.Radius = _Radius;
+	m_Info.Radius = _Radius;	
 }
 
 void CLight3D::SaveToFile(FILE* _File)

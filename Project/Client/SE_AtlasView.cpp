@@ -96,7 +96,7 @@ void SE_AtlasView::SelectCheck()
 	ImGui::InputFloat2("PixelPos", PixelPos);
 
 	// 마우스 왼쪽 Tap 체크
-	/*if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+	if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 	{
 		m_MouseLT = ImGui::GetMousePos();
 		ImVec2 vDiff = ImVec2(m_MouseLT.x - ImageRectMin.x, m_MouseLT.y - ImageRectMin.y);
@@ -108,10 +108,12 @@ void SE_AtlasView::SelectCheck()
 		m_MouseRB = ImGui::GetMousePos();
 		ImVec2 vDiff = ImVec2(m_MouseRB.x - ImageRectMin.x, m_MouseRB.y - ImageRectMin.y);
 		m_MouseRB = ImVec2(vDiff.x / m_Ratio, vDiff.y / m_Ratio);
-	}*/
+	}
+
+	
 
 	// 마우스 왼쪽 클릭 체크
-	if (KEY_RELEASED(KEY::LBTN))
+	if (ImGui::IsMouseReleased(ImGuiMouseButton_::ImGuiMouseButton_Left))
 	{
 		Vec2 vPixelPos = Vec2(ImGui::GetMousePos().x, ImGui::GetMousePos().y);
 		ImVec2 vDiff = ImVec2(vPixelPos.x - ImageRectMin.x, vPixelPos.y - ImageRectMin.y);
@@ -140,8 +142,7 @@ void SE_AtlasView::CalcSpriteSize(Vec2 _PixelPos)
 	float top = m_AtlasTex->Height() - 1.f;
 	float right = 0.f;
 	float bot = 0.f;
-		
-
+	
 	// 등록아이디 검사용 Set Clear
 	m_PixelID.clear();
 		

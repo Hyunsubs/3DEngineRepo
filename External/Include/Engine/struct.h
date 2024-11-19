@@ -25,6 +25,12 @@ struct tDebugShapeInfo
 };
 
 
+struct tRay
+{
+	Vec3 vStart;
+	Vec3 vDir;
+};
+
 struct tTask
 {
 	TASK_TYPE	Type;

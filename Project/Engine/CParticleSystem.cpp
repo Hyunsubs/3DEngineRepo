@@ -156,7 +156,6 @@ void CParticleSystem::Render()
 
 void CParticleSystem::render_shadowmap()
 {
-
 }
 
 

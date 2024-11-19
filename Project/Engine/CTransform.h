@@ -44,8 +44,10 @@ public:
     Vec3 GetWorldDir(DIR _Type) { return m_WorldDir[_Type]; }
 
     const Matrix& GetWorldMat() { return m_matWorld; }
+    const Matrix& GetWorldMatInv() { return m_matWorldInv; }
 
-    CTransform& operator= (const CTransform& _Other);
+    CTransform& operator = (const CTransform& _Other);
+
 
     virtual void SaveToFile(FILE* _File) override;
     virtual void LoadFromFile(FILE* _File) override;

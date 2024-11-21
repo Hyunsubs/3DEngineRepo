@@ -37,7 +37,7 @@
 #define BrushScale          g_vec2_0
 #define BrushPos            g_vec2_1
 
-StructuredBuffer<tWeight8>  WEIGHT_MAP : register(t20);
+StructuredBuffer<tWeight8> WEIGHT_MAP : register(t20);
 #define WEIGHT_RESOLUTION   g_vec2_2
 // ================
 struct VS_IN
@@ -72,7 +72,7 @@ VS_OUT VS_LandScape(VS_IN _in)
     
     output.vNormal = _in.vNormal;
     output.vTangent = _in.vTangent;
-    output.vBinormal = _in.vBinormal;    
+    output.vBinormal = _in.vBinormal;
     
     output.vUV = _in.vUV;
     
@@ -124,7 +124,7 @@ struct HS_OUT
     
     float3 vNormal : NORMAL;
     float3 vTangent : TANGENT;
-    float3 vBinormal : BINORMAL;    
+    float3 vBinormal : BINORMAL;
     
     float2 vUV : TEXCOORD;
 };
@@ -146,7 +146,7 @@ HS_OUT HS_LandScape(InputPatch<VS_OUT, 3> _in
     
     output.vNormal = _in[_ControlPointID].vNormal;
     output.vTangent = _in[_ControlPointID].vTangent;
-    output.vBinormal = _in[_ControlPointID].vBinormal;    
+    output.vBinormal = _in[_ControlPointID].vBinormal;
     
     output.vUV = _in[_ControlPointID].vUV;
     
@@ -171,20 +171,20 @@ struct DS_OUT
 DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocation
                 , TessFactor _PatchTessFactor)
 {
-    HS_OUT input = (HS_OUT) 0.f;    
+    HS_OUT input = (HS_OUT) 0.f;
     DS_OUT output = (DS_OUT) 0.f;
     
     for (int i = 0; i < 3; ++i)
     {
-        input.vLocalPos += _in[i].vLocalPos * _Weight[i];        
+        input.vLocalPos += _in[i].vLocalPos * _Weight[i];
         input.vNormal += _in[i].vNormal * _Weight[i];
         input.vTangent += _in[i].vTangent * _Weight[i];
-        input.vBinormal += _in[i].vBinormal * _Weight[i];        
+        input.vBinormal += _in[i].vBinormal * _Weight[i];
         input.vUV += _in[i].vUV * _Weight[i];
     }
             
     // 높이맵이 있다면
-    if(g_btex_0)
+    if (g_btex_0)
     {
         float2 vHeightMapUV = float2(input.vLocalPos.x / (float) FaceX
                                     , 1.f - (input.vLocalPos.z / (float) FaceZ));
@@ -204,29 +204,28 @@ DS_OUT DS_LandScape(OutputPatch<HS_OUT, 3> _in, float3 _Weight : SV_DomainLocati
         
         for (int i = 0; i < 4; ++i)
         {
-            float2 vUV = float2(arrUDLR[i].x / (float) FaceX, 1.f - (arrUDLR[i].z / (float) FaceZ));        
+            float2 vUV = float2(arrUDLR[i].x / (float) FaceX, 1.f - (arrUDLR[i].z / (float) FaceZ));
             arrUDLR[i].y = HeightMap.SampleLevel(g_sam_0, vUV, 0).x;
             arrUDLR[i] = mul(float4(arrUDLR[i], 1.f), matWorld).xyz;
         }
         
         float3 vTangent = normalize(arrUDLR[3] - arrUDLR[2]);
-        float3 vBinormal = normalize(arrUDLR[1] - arrUDLR[0]);        
+        float3 vBinormal = normalize(arrUDLR[1] - arrUDLR[0]);
         float3 vNormal = cross(vTangent, vBinormal);
                 
         output.vViewTangent = normalize(mul(float4(vTangent, 0.f), matView));
         output.vViewBinormal = normalize(mul(float4(vBinormal, 0.f), matView));
         output.vViewNormal = normalize(mul(float4(vNormal, 0.f), matView));
     }
-    
     else
     {
         output.vViewNormal = normalize(mul(float4(input.vNormal, 0.f), matWV));
         output.vViewTangent = normalize(mul(float4(input.vTangent, 0.f), matWV));
-        output.vViewBinormal = normalize(mul(float4(input.vBinormal, 0.f), matWV));        
+        output.vViewBinormal = normalize(mul(float4(input.vBinormal, 0.f), matWV));
     }
     
     output.Position = mul(float4(input.vLocalPos, 1.f), matWVP);
-    output.vViewPos = mul(float4(input.vLocalPos, 1.f), matWV);  
+    output.vViewPos = mul(float4(input.vLocalPos, 1.f), matWV);
     output.vUV = input.vUV;
     
     return output;
@@ -274,8 +273,8 @@ PS_OUT PS_LandScape(DS_OUT _in)
     if (HasColorTex)
     {
         // 편미분
-        //float2 derivX = ddx(_in.vUV);
-        //float2 derivY = ddy(_in.vUV);
+        float2 derivX = ddx(_in.vUV);
+        float2 derivY = ddy(_in.vUV);
         
         float2 vFullUV = _in.vUV / float2(FaceX, FaceZ);
         int2 vColRow = vFullUV * WEIGHT_RESOLUTION;
@@ -292,8 +291,8 @@ PS_OUT PS_LandScape(DS_OUT _in)
             
             if (0.f != Weight)
             {
-                vColor += COLOR_TEX.Sample(g_sam_0, float3(_in.vUV, i)) * Weight;
-                //vColor += COLOR_TEX.SampleGrad(g_sam_0, float3(_in.vUV, i), derivX * 0.25f, derivY * 0.25f) * Weight;
+                //vColor += COLOR_TEX.SampleLevel(g_sam_0, float3(_in.vUV, i), 5.f) * Weight;
+                vColor += COLOR_TEX.SampleGrad(g_sam_0, float3(_in.vUV, i), derivX * 0.5f, derivY * 0.5f) * Weight;
             }
                         
             // 제일 높았던 가중치를 기록
@@ -306,7 +305,8 @@ PS_OUT PS_LandScape(DS_OUT _in)
         
         if (MaxIdx != -1)
         {
-            float3 vNormal = NORMAL_TEX.Sample(g_sam_0, float3(_in.vUV, MaxIdx));
+            //float3 vNormal = NORMAL_TEX.SampleLevel(g_sam_0, float3(_in.vUV, MaxIdx), 0.f);
+            float3 vNormal = NORMAL_TEX.SampleGrad(g_sam_0, float3(_in.vUV, MaxIdx), derivX * 0.5f, derivY * 0.5f);
             vNormal = vNormal * 2.f - 1.f;
         
             float3x3 Rot =

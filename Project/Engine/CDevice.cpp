@@ -12,10 +12,10 @@ CDevice::CDevice()
 }
 
 CDevice::~CDevice()
-{ 
+{
     for (UINT i = 0; i < (UINT)CB_TYPE::END; ++i)
     {
-        if(nullptr != m_arrCB[i])
+        if (nullptr != m_arrCB[i])
             delete m_arrCB[i];
     }
 }
@@ -37,10 +37,10 @@ int CDevice::Init(HWND _hWnd, UINT _Width, UINT _Height)
 #endif
 
     if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE
-                                , nullptr, Flag
-                                , nullptr, 0
-                                , D3D11_SDK_VERSION
-                                , m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf())))
+        , nullptr, Flag
+        , nullptr, 0
+        , D3D11_SDK_VERSION
+        , m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf())))
     {
         MessageBox(nullptr, L"Device, Context 생성 실패", L"장치초기화 실패", MB_OK);
         return E_FAIL;
@@ -117,29 +117,29 @@ int CDevice::CreateSwapChain()
     //             버퍼에 그려진 이미지를 화면 출력을 담당하는 객체
     DXGI_SWAP_CHAIN_DESC Desc = {};
 
-    Desc.BufferCount                        = 1; // 백버퍼 개수
-    Desc.BufferDesc.Width                   = (UINT)m_vResolution.x; // 백버퍼 해상도 
-    Desc.BufferDesc.Height                  = (UINT)m_vResolution.y;// 백버퍼 해상도
-    Desc.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM; // 픽셀 포맷
+    Desc.BufferCount = 1; // 백버퍼 개수
+    Desc.BufferDesc.Width = (UINT)m_vResolution.x; // 백버퍼 해상도 
+    Desc.BufferDesc.Height = (UINT)m_vResolution.y;// 백버퍼 해상도
+    Desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; // 픽셀 포맷
     Desc.BufferDesc.RefreshRate.Denominator = 60;
-    Desc.BufferDesc.RefreshRate.Numerator   = 1;
-    Desc.BufferDesc.Scaling                 = DXGI_MODE_SCALING_UNSPECIFIED;
-    Desc.BufferDesc.ScanlineOrdering        = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-    Desc.BufferUsage                        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    Desc.Windowed                           = true;  // 창모드 설정
-    Desc.OutputWindow                       = m_hWnd;// SwapChain 버퍼의 이미지를 출력시킬 윈도우 핸들
-    Desc.Flags                              = 0;
-    Desc.SampleDesc.Count                   = 1;
-    Desc.SampleDesc.Quality                 = 0;
-    Desc.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
-        
-    ComPtr<IDXGIDevice>     Device  = nullptr;
+    Desc.BufferDesc.RefreshRate.Numerator = 1;
+    Desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+    Desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+    Desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    Desc.Windowed = true;  // 창모드 설정
+    Desc.OutputWindow = m_hWnd;// SwapChain 버퍼의 이미지를 출력시킬 윈도우 핸들
+    Desc.Flags = 0;
+    Desc.SampleDesc.Count = 1;
+    Desc.SampleDesc.Quality = 0;
+    Desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+    ComPtr<IDXGIDevice>     Device = nullptr;
     ComPtr<IDXGIAdapter>    Adapter = nullptr;
     ComPtr<IDXGIFactory>    Factory = nullptr;
 
     if (FAILED(m_Device->QueryInterface(__uuidof(IDXGIDevice), (void**)Device.GetAddressOf())))
         return E_FAIL;
-    
+
     if (FAILED(Device->GetParent(__uuidof(IDXGIAdapter), (void**)Adapter.GetAddressOf())))
         return E_FAIL;
 
@@ -150,7 +150,7 @@ int CDevice::CreateSwapChain()
     {
         return E_FAIL;
     }
-  
+
     return S_OK;
 }
 
@@ -166,8 +166,8 @@ int CDevice::CreateView()
 
     // DepthStencil 텍스쳐 생성
     m_DSTex = CAssetMgr::GetInst()->CreateTexture(L"DepthStencilTex"
-                                                , (UINT)m_vResolution.x, (UINT)m_vResolution.y
-                                                , DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL); 
+        , (UINT)m_vResolution.x, (UINT)m_vResolution.y
+        , DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_BIND_DEPTH_STENCIL);
 
     // 렌더타겟 및 DepthStencilTex 타겟 지정
     CONTEXT->OMSetRenderTargets(1, m_RTTex->GetRTV().GetAddressOf(), m_DSTex->GetDSV().Get());
@@ -187,7 +187,7 @@ int CDevice::CreateConstBuffer()
         return E_FAIL;
     }
     m_arrCB[(UINT)CB_TYPE::TRANSFORM] = pCB;
-    
+
 
     pCB = new CConstBuffer;
     if (FAILED(pCB->Create(CB_TYPE::MATERIAL, sizeof(tMtrlConst))))
@@ -212,7 +212,7 @@ int CDevice::CreateConstBuffer()
         MessageBox(nullptr, L"상수버퍼 생성 실패", L"초기화 실패", MB_OK);
         return E_FAIL;
     }
-    m_arrCB[(UINT)CB_TYPE::GLOBAL] = pCB;    
+    m_arrCB[(UINT)CB_TYPE::GLOBAL] = pCB;
 
     return S_OK;
 }
@@ -254,7 +254,7 @@ int CDevice::CreateDepthStencilState()
     Desc.DepthEnable = true;    // 깊이판정을 진행
     Desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;   // 깊이 판정 방식
     Desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;   // 깊이판정을 성공시 깊이 기록여부
-    Desc.StencilEnable = false;    
+    Desc.StencilEnable = false;
 
     if (FAILED(DEVICE->CreateDepthStencilState(&Desc, m_DSState[(UINT)DS_TYPE::LESS_EQUAL].GetAddressOf())))
     {
@@ -398,14 +398,14 @@ int CDevice::CreateBlendState()
     Desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
     // Src(Pixel RGB) * A     +      Dest(RenderTarget RGB) * (1 - A)
-    Desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD; 
+    Desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
     Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; // 계수
     Desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // 계수
 
     Desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
     Desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
-    Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;   
-          
+    Desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+
     if (FAILED(DEVICE->CreateBlendState(&Desc, m_BSState[(UINT)BS_TYPE::ALPHABLEND_COVERAGE].GetAddressOf())))
     {
         return E_FAIL;
@@ -463,7 +463,7 @@ int CDevice::CreateBlendState()
 
     Desc.RenderTarget[0].BlendEnable = true;
     Desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-   
+
     Desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
     Desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; // 계수
     Desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // 계수
@@ -477,7 +477,7 @@ int CDevice::CreateBlendState()
 
     Desc.RenderTarget[1].BlendOp = D3D11_BLEND_OP_ADD;
     Desc.RenderTarget[1].SrcBlend = D3D11_BLEND_ONE;
-    Desc.RenderTarget[1].DestBlend = D3D11_BLEND_ONE; 
+    Desc.RenderTarget[1].DestBlend = D3D11_BLEND_ONE;
 
     Desc.RenderTarget[1].BlendOpAlpha = D3D11_BLEND_OP_ADD;
     Desc.RenderTarget[1].SrcBlendAlpha = D3D11_BLEND_ONE;
@@ -502,11 +502,13 @@ int CDevice::CreateSamplerState()
     Desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     Desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
     Desc.Filter = D3D11_FILTER_ANISOTROPIC; // 이방성 필터링
+    Desc.MinLOD = 0;
+    Desc.MaxLOD = 10.f;
 
     if (FAILED(DEVICE->CreateSamplerState(&Desc, m_Sampler[0].GetAddressOf())))
     {
         return E_FAIL;
-    }    
+    }
 
     Desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     Desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;

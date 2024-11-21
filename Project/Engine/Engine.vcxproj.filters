@@ -181,11 +181,11 @@
     <ClInclude Include="CHeightMapCS.h">
       <Filter>HLSL\03. Compute\03. LandScape\02. HeightMap</Filter>
     </ClInclude>
-    <ClInclude Include="CRaycastCS.h">
-      <Filter>HLSL\03. Compute\03. LandScape\01. RayCasting</Filter>
-    </ClInclude>
     <ClInclude Include="CWeightMapCS.h">
       <Filter>HLSL\03. Compute\03. LandScape\03. WeightMap</Filter>
+    </ClInclude>
+    <ClInclude Include="CRaycastCS.h">
+      <Filter>HLSL\03. Compute\04. Raycast</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -354,11 +354,11 @@
     <ClCompile Include="CHeightMapCS.cpp">
       <Filter>HLSL\03. Compute\03. LandScape\02. HeightMap</Filter>
     </ClCompile>
-    <ClCompile Include="CRaycastCS.cpp">
-      <Filter>HLSL\03. Compute\03. LandScape\01. RayCasting</Filter>
-    </ClCompile>
     <ClCompile Include="CWeightMapCS.cpp">
       <Filter>HLSL\03. Compute\03. LandScape\03. WeightMap</Filter>
+    </ClCompile>
+    <ClCompile Include="CRaycastCS.cpp">
+      <Filter>HLSL\03. Compute\04. Raycast</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -554,6 +554,12 @@
     <Filter Include="HLSL\03. Compute\03. LandScape\03. WeightMap">
       <UniqueIdentifier>{8fa92b25-16ca-4d4e-b0fa-434c59623978}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HLSL\03. Compute\04. Raycast">
+      <UniqueIdentifier>{31ff1740-a81f-4318-bbe8-e6ed98984cca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL\03. Compute\05. WeightMap">
+      <UniqueIdentifier>{eab9b6b5-9031-4155-b93f-5eb088a9aa3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -621,11 +627,11 @@
     <FxCompile Include="heightmap.fx">
       <Filter>HLSL\03. Compute\03. LandScape\02. HeightMap</Filter>
     </FxCompile>
-    <FxCompile Include="raycast.fx">
-      <Filter>HLSL\03. Compute\03. LandScape\01. RayCasting</Filter>
-    </FxCompile>
     <FxCompile Include="weightmap.fx">
       <Filter>HLSL\03. Compute\03. LandScape\03. WeightMap</Filter>
+    </FxCompile>
+    <FxCompile Include="raycast.fx">
+      <Filter>HLSL\03. Compute\04. Raycast</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
